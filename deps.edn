@@ -3,7 +3,8 @@
         ring/ring-jetty-adapter {:mvn/version "1.10.0"}
         ring/ring-devel {:mvn/version "1.10.0"}
         org.clojure/java.jdbc {:mvn/version "0.7.12"}
-        org.postgresql/postgresql {:mvn/version "42.6.0"}}
+        org.postgresql/postgresql {:mvn/version "42.6.0"}
+        metosin/reitit-ring {:mvn/version "0.5.5"}}
  :aliases {:server {:main-opts ["-m" "core"]}
            :test-server {:main-opts ["-m" "test.core"]}
            :build {:deps {io.github.clojure/tools.build {:git/tag "v0.9.4" :git/sha "76b78fe"}}
