@@ -1,4 +1,4 @@
-(ns clj.src.core
+(ns core
   (:require [ring.adapter.jetty :refer [run-jetty]]
             [ring.middleware.reload :refer [wrap-reload]]))
 

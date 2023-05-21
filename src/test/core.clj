@@ -1,4 +1,4 @@
-(ns clj.test.core)
+(ns test.core)
 
 (defn -main []
   (println "Hello from test"))

@@ -4,5 +4,5 @@
         ring/ring-devel {:mvn/version "1.10.0"}
         org.clojure/java.jdbc {:mvn/version "0.7.12"}
         org.postgresql/postgresql {:mvn/version "42.6.0"}}
- :aliases {:server {:main-opts ["-m" "clj.src.core"]}
-           :test-server {:main-opts ["-m" "clj.test.core"]}}}
+ :aliases {:server {:main-opts ["-m" "core"]}
+           :test-server {:main-opts ["-m" "test.core"]}}}

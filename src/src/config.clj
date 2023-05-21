@@ -1,4 +1,4 @@
-(ns clj.src.config
+(ns config
   (:require [clojure.edn :as edn]))
 
 (defn load-config [filename]

@@ -1,4 +1,4 @@
-(ns clj.src.db.init-tables
+(ns db.init-tables
   (:require [clj.src.db.credentials :refer [db]]
             [clojure.java.jdbc :as jdbc]))
 

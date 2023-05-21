@@ -1,4 +1,4 @@
-(ns clj.src.db.credentials
+(ns db.credentials
   (:require [clj.src.config :refer [dbtype dbname host user password]]))
 
 (def db {:dbtype dbtype
