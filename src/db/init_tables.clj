@@ -48,6 +48,7 @@
                       address_id INT NOT NULL REFERENCES address(id))"))
 
 (defn -main []
+  (println 'INIT-TABLES)
   (create-table-gender)
   (add-genders)
   (create-table-patient)
