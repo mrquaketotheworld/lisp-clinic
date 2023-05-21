@@ -3,9 +3,10 @@
             [clojure.java.jdbc :as jdbc]))
 
 (defn add [request]
+  (println (:body request))
   {:status 200
    :headers {"Content-Type" "application/json"}
-   :body "add"})
+   :body {:hello "world" :x 5}})
 
 (defn delete [request]
   {:status 200
@@ -17,7 +18,7 @@
    :headers {"Content-Type" "application/json"}
    :body "edit"})
 
-(defn get [request]
+(defn get-by-id [request]
   {:status 200
    :headers {"Content-Type" "application/json"}
    :body "get"})
