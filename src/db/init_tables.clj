@@ -1,5 +1,5 @@
 (ns db.init-tables
-  (:require [clj.src.db.credentials :refer [db]]
+  (:require [db.credentials :refer [db]]
             [clojure.java.jdbc :as jdbc]))
 
 (defn create-table-gender []
