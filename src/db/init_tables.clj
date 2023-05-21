@@ -12,7 +12,7 @@
 
 (defn create-table-patient []
   (jdbc/execute! db "CREATE TABLE IF NOT EXISTS patient (
-                      mid VARCHAR(64) PRIMARY KEY,
+                      mid VARCHAR(12) PRIMARY KEY,
                       first_name VARCHAR(128) NOT NULL,
                       last_name VARCHAR(128) NOT NULL,
                       gender_type VARCHAR(16) NOT NULL REFERENCES gender(gender_type),
