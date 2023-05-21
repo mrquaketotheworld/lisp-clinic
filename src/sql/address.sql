@@ -1,7 +1,0 @@
-CREATE TABLE IF NOT EXISTS address (
-  id SERIAL PRIMARY KEY,
-  city VARCHAR(128) NOT NULL,
-  street VARCHAR(128) NOT NULL,
-  house INT NOT NULL,
-  created_at timestamptz DEFAULT NOW() NOT NULL
-)
