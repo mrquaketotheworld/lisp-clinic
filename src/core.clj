@@ -5,7 +5,7 @@
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
             [db.init-tables :as init-tables]
             [reitit.ring :as ring]
-            [api.patient :as patient]))
+            [api.patient.patient :as patient]))
 
 (def app
   (ring/ring-handler
