@@ -2,16 +2,17 @@
   (:require
    [db.models.patient :as patient]
    [utils.validation.patient :as validation-patient]
-   [utils.format.patient :as format-patient]))
+   [utils.format.patient :as format-patient]
+   [utils.format.message :as message]))
 
 (defn add [request]
   (let [patient-form (:body request)
         formatted-patient-form (format-patient/format-patient-form patient-form)]
-    (if (validation-patient/is-patient-form-valid? formatted-patient-form)
-      (patient/add formatted-patient-form)
-      {:status 400
-       :headers {"Content-Type" "application/json"}
-       :body {:error "Validation error"}})))
+    (if (patient/does-exist? (:mid formatted-patient-form))
+      (message/error "User already exists")
+      (if (validation-patient/is-patient-form-valid? formatted-patient-form)
+        (patient/add! formatted-patient-form)
+        (message/error "Validation error")))))
 
 (defn delete [request]
   {:status 200
