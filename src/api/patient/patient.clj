@@ -1,18 +1,15 @@
 (ns api.patient.patient
-  (:require [db.credentials :refer [db]]
-            [clojure.java.jdbc :as jdbc]
-            [api.patient.validation :as validation]))
+  (:require
+   [db.models.patient :as patient]
+   [api.patient.validation :as validation]))
 
 (defn add [request]
-  (let [body (:body request)
-        {:keys [first-name last-name gender birth city street house mid]} body]
-   (if (validation/is-add-handler-valid? body)
-     {:status 200
-      :headers {"Content-Type" "application/json"}
-      :body {:is-valid? true}}
-     {:status 400
-      :headers {"Content-Type" "application/json"}
-      :body {:is-valid? false}})))
+  (let [patient-form (:body request)]
+    (if (validation/is-patient-handler-valid? patient-form)
+      (patient/add patient-form)
+      {:status 400
+       :headers {"Content-Type" "application/json"}
+       :body {:error "Validation error"}})))
 
 (defn delete [request]
   {:status 200
