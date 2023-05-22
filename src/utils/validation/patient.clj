@@ -1,4 +1,4 @@
-(ns api.patient.validation
+(ns utils.validation.patient
   (:require [clojure.spec.alpha :as spec])
   (:import [java.time LocalDate]))
 
@@ -19,6 +19,6 @@
 (spec/def ::patient (spec/keys :req-un [::first-name ::last-name ::gender ::birth-day ::birth-month
                                         ::birth-year ::city ::street ::house ::mid]))
 
-(defn is-patient-handler-valid? [patient]
+(defn is-patient-form-valid? [patient]
   (spec/valid? ::patient patient))
 
