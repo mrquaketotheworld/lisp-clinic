@@ -5,9 +5,8 @@
   (edn/read-string (slurp filename)))
 
 (def config (load-config "config.edn"))
-(def dbtype (:dbtype config))
-(def dbname (:dbname config))
-(def host (:host config))
-(def user (:user config))
-(def password (:password config))
-
+(def db {:dbtype (:dbtype config)
+         :dbname (:dbname config)
+         :host (:host config)
+         :user (:user config)
+         :password (:password config)})
