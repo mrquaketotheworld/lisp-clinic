@@ -1,15 +1,15 @@
 (ns db.models.patient
-  (:require [db.credentials :refer [db]]
+  (:require [config :refer [db-config]]
             [next.jdbc :as jdbc]
             [next.jdbc.sql :as sql])
   (:import [java.time LocalDate]))
 
 (defn does-exist? [mid]
-  (boolean (jdbc/execute-one! db ["SELECT mid FROM patient WHERE mid = ?" mid])))
+  (boolean (jdbc/execute-one! db-config ["SELECT mid FROM patient WHERE mid = ?" mid])))
 
 (defn add! [{:keys [first-name last-name gender birth-day birth-month birth-year city street house
                    mid]}]
-  (jdbc/with-transaction [db-con db]
+  (jdbc/with-transaction [db-con db-config]
     (sql/insert! db-con :patient {:first_name first-name
                                   :last_name last-name
                                   :gender_type gender

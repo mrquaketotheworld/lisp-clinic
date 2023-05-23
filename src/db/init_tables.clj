@@ -1,18 +1,18 @@
 (ns db.init-tables
-  (:require [db.credentials :refer [db]]
+  (:require [config :refer [db-config]]
             [next.jdbc :as jdbc]
             [next.jdbc.sql :as sql]))
 
 (defn create-table-gender []
-  (jdbc/execute-one! db ["CREATE TABLE IF NOT EXISTS gender (
+  (jdbc/execute-one! db-config ["CREATE TABLE IF NOT EXISTS gender (
                            gender_type VARCHAR(16) PRIMARY KEY,
                            created_at timestamptz DEFAULT NOW() NOT NULL)"]))
 
 (defn add-genders []
-  (sql/insert-multi! db :gender [{:gender_type "Male"} {:gender_type "Female"}]))
+  (sql/insert-multi! db-config :gender [{:gender_type "Male"} {:gender_type "Female"}]))
 
 (defn create-table-patient []
-  (jdbc/execute-one! db ["CREATE TABLE IF NOT EXISTS patient (
+  (jdbc/execute-one! db-config ["CREATE TABLE IF NOT EXISTS patient (
                            mid VARCHAR(12) PRIMARY KEY,
                            first_name VARCHAR(128) NOT NULL,
                            last_name VARCHAR(128) NOT NULL,
@@ -22,7 +22,7 @@
                            updated_at timestamptz DEFAULT NOW() NOT NULL)"]))
 
 (defn add-patient-update-at-trigger []
-  (jdbc/execute-one! db ["CREATE OR REPLACE FUNCTION trigger_set_timestamp()
+  (jdbc/execute-one! db-config ["CREATE OR REPLACE FUNCTION trigger_set_timestamp()
                            RETURNS TRIGGER AS $$
                            BEGIN
                              NEW.updated_at = NOW();
@@ -35,7 +35,7 @@
                              EXECUTE PROCEDURE trigger_set_timestamp()"]))
 
 (defn create-table-address []
-  (jdbc/execute-one! db ["CREATE TABLE IF NOT EXISTS address (
+  (jdbc/execute-one! db-config ["CREATE TABLE IF NOT EXISTS address (
                            id SERIAL PRIMARY KEY,
                            city VARCHAR(128) NOT NULL,
                            street VARCHAR(128) NOT NULL,
@@ -44,7 +44,7 @@
                            UNIQUE (city, street, house))"]))
 
 (defn create-table-patient-address []
-  (jdbc/execute-one! db ["CREATE TABLE IF NOT EXISTS patient_address (
+  (jdbc/execute-one! db-config ["CREATE TABLE IF NOT EXISTS patient_address (
                            patient_mid VARCHAR(64) NOT NULL REFERENCES patient(mid),
                            address_id INT NOT NULL REFERENCES address(id))"]))
 
