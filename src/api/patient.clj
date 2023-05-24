@@ -5,27 +5,25 @@
    [utils.format.patient :as format-patient]
    [utils.format.message :as message]))
 
-(defn add [request]
+(defn add-edit [request callback]
   (let [patient-form (:body request)
         formatted-patient-form (format-patient/format-patient-form patient-form)]
     (if (patient/does-exist? (:mid formatted-patient-form))
       (message/error "Patient already exists")
       (if (validation-patient/is-patient-form-valid? formatted-patient-form)
-        (do (patient/add formatted-patient-form)
+        (do (callback formatted-patient-form)
             (message/success))
         (message/error "Validation error")))))
+
+(defn add [request]
+  (add-edit request patient/add))
 
 (defn delete [request]
   (patient/delete (:mid (:body request)))
   (message/success))
 
 (defn edit [request]
-  (let [patient-form (:body request)
-        formatted-patient-form (format-patient/format-patient-form patient-form)]
-    (if (validation-patient/is-patient-form-valid? formatted-patient-form)
-      (do (patient/edit formatted-patient-form)
-          (message/success))
-      (message/error "Validation error"))))
+  (add-edit request patient/edit))
 
 (defn get-by-id [request]
   {:status 200
