@@ -10,7 +10,11 @@
 (defn get-by-mid [mid]
   (when-let [patient (first (sql/find-by-keys db-config :patient {:mid mid}
                                               {:builder-fn rs/as-unqualified-lower-maps}))]
-    (assoc patient :birth (.toString (:birth patient)))))
+    (let [patient-address (address/get-by-mid mid)]
+      (-> patient
+          (assoc :birth (.toString (:birth patient)))
+          (dissoc :updated_at :created_at)
+          (merge patient-address)))))
 
 (defn assign-address [db-con mid city street house]
   (let [address-id (address/get-address-id city street house)]

@@ -30,8 +30,8 @@
                         (message/error "Patient doesn't exist")))))
 
 (defn get-by-mid [request]
-  (if-let [patient-row (patient/get-by-mid (:mid (:body request)))]
-    (message/success patient-row)
+  (if-let [patient (patient/get-by-mid (:mid (:body request)))]
+    (message/success patient)
     (message/error "Patient doesn't exist")))
 
 (defn search [request]
