@@ -11,7 +11,7 @@
     (if (patient/does-exist? (:mid formatted-patient-form))
       (message/error "Patient already exists")
       (if (validation-patient/is-patient-form-valid? formatted-patient-form)
-        (do (patient/add! formatted-patient-form)
+        (do (patient/add formatted-patient-form)
             (message/success))
         (message/error "Validation error")))))
 
