@@ -6,8 +6,8 @@
             [db.models.patient-address :as patient-address])
   (:import [java.time LocalDate]))
 
-(defn does-exist? [mid]
-  (boolean (first (sql/find-by-keys db-config :patient {:mid mid}))))
+(defn get-by-mid [mid]
+  (first (sql/find-by-keys db-config :patient {:mid mid})))
 
 (defn assign-address [db-con mid city street house]
   (let [address-id (address/match-address db-con city street house)]

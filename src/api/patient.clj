@@ -8,7 +8,7 @@
 (defn add-edit [request callback]
   (let [patient-form (:body request)
         formatted-patient-form (format-patient/format-patient-form patient-form)]
-    (if (patient/does-exist? (:mid formatted-patient-form))
+    (if (patient/get-by-mid (:mid formatted-patient-form))
       (message/error "Patient already exists")
       (if (validation-patient/is-patient-form-valid? formatted-patient-form)
         (do (callback formatted-patient-form)
