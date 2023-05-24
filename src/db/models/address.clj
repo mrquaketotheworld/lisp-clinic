@@ -5,7 +5,10 @@
             [config :refer [db-config]]))
 
 (defn match-address [db-con city street house]
-  (:address/id (first (sql/find-by-keys db-con :address {:city city :street street :house house}))))
+   (sql/find-by-keys db-con :address {:city city :street street :house house}))
+
+(defn get-address-id [db-con city street house]
+  (:address/id (first (match-address db-con city street house))))
 
 (defn add [db-con city street house]
   (:address/id (sql/insert! db-con :address

@@ -12,7 +12,7 @@
                            {:builder-fn rs/as-unqualified-lower-maps})))
 
 (defn assign-address [db-con mid city street house]
-  (let [address-id (address/match-address db-con city street house)]
+  (let [address-id (address/get-address-id db-con city street house)]
     (if address-id
       (patient-address/add db-con mid address-id)
       (let [created-address-id (address/add db-con city street house)]
