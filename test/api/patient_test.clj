@@ -103,7 +103,19 @@
                                               :street "big apple"
                                               :house 20
                                               :mid "123426782328"})]
-      (is (= "{\"success\":true}" (:body response))))))
+      (is (= "{\"success\":true}" (:body response)))))
+
+  (testing "Validation, patient without field"
+    (let [response (mock-request-patient-add {:first-name "Liza"
+                                              :last-name "Simpson"
+                                              :birth-day 30
+                                              :birth-month 10
+                                              :birth-year 1994
+                                              :city "New york"
+                                              :street "big apple"
+                                              :house 20
+                                              :mid "123426782328"})]
+      (is (= "{\"error\":\"Validation error\"}" (:body response))))))
 
 (deftest patient-delete
   (println 'RUN-PATIENT-DELETE)
