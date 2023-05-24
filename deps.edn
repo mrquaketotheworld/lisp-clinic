@@ -6,7 +6,8 @@
         org.postgresql/postgresql {:mvn/version "42.6.0"}
         metosin/reitit-ring {:mvn/version "0.5.5"}
         ring/ring-json {:mvn/version "0.5.1"}
-        ring/ring-mock {:mvn/version "0.4.0"}}
+        ring/ring-mock {:mvn/version "0.4.0"}
+        cheshire/cheshire {:mvn/version "5.11.0"}}
  :aliases {:server {:main-opts ["-m" "core"]}
            :test {:extra-paths ["test"]
                   :extra-deps {io.github.cognitect-labs/test-runner
