@@ -7,8 +7,8 @@
             [config :as config-src-dir]
             [config-test :refer [db-test]]
             [db.init-tables :as init-tables]
-            [db.models.patient :as patient]
-            [db.models.address :as address]))
+            [db.models.address :as address]
+            [utils.format.message :refer [PATIENT-DOESNT-EXIST VALIDATION-ERROR PATIENT-EXISTS]]))
 
 (defn mock-request [request-type url body]
   (:body (core/wrapped-app (-> (mock/request request-type url)
@@ -105,7 +105,7 @@
                    :mid "153426782327"}]
       (mock-request-patient-add patient)
       (let [body (mock-request-patient-add patient)]
-        (is (= "Patient already exists" (json-parse-error body))))))
+        (is (= PATIENT-EXISTS (json-parse-error body))))))
 
   (testing "Patient was saved"
     (let [body (mock-request-patient-add {:first-name "Liza"
@@ -130,7 +130,7 @@
                                                 :street "big apple"
                                                 :house 20
                                                 :mid "123426782328"})]
-      (is (= "Validation error" (json-parse-error body))))))
+      (is (= VALIDATION-ERROR (json-parse-error body))))))
 
 (deftest patient-delete
   (println 'RUN-PATIENT-DELETE)
@@ -148,8 +148,8 @@
                                  :house 20
                                  :mid mid})
       (let [body (mock-request :delete "/api/patient/delete" {:mid mid})
-            patient (patient/get-by-mid mid)]
-        (is (and (json-parse-success body) (nil? patient)))))))
+            patient (mock-request-patient-get-by-mid mid)]
+        (is (and (json-parse-success body) (= PATIENT-DOESNT-EXIST (:error patient))))))))
 
 (deftest patient-edit
   (println 'RUN-PATIENT-EDIT)
@@ -198,7 +198,7 @@
                                                  :street "Alex Yao"
                                                  :house 2
                                                  :mid "423838383838"})]
-      (is (= "Patient doesn't exist" (json-parse-error body))))))
+      (is (= PATIENT-DOESNT-EXIST (json-parse-error body))))))
 
 (deftest patient-get
   (println 'RUN-PATIENT-GET)
@@ -227,5 +227,5 @@
                         :mid mid})))))
 
   (testing "Get patient by unknown mid"
-    (let [patient (patient/get-by-mid "unknownmid32")]
-      (is (nil? patient)))))
+    (let [patient (mock-request-patient-get-by-mid "unknownmid32")]
+      (is (= PATIENT-DOESNT-EXIST (:error patient))))))
