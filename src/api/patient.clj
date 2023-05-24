@@ -15,14 +15,11 @@
         (message/error "Validation error")))))
 
 (defn delete [request]
-  {:status 200
-   :headers {"Content-Type" "application/json"}
-   :body "delete"})
+  (patient/delete (:mid (:body request)))
+  (message/success))
 
 (defn edit [request]
-  {:status 200
-   :headers {"Content-Type" "application/json"}
-   :body "edit"})
+  (message/success))
 
 (defn get-by-id [request]
   {:status 200

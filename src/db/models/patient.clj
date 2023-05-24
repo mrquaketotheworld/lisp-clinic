@@ -28,3 +28,6 @@
           (sql/insert! db-con :patient_address {:patient_mid mid
                                                 :address_id created-address-id}))))))
 
+(defn delete [mid]
+  (jdbc/execute-one! db-config ["DELETE FROM patient WHERE mid = ?" mid]))
+
