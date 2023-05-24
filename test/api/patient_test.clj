@@ -2,13 +2,13 @@
   (:require [clojure.test :refer [deftest is testing use-fixtures]]
             [next.jdbc :as jdbc]
             [next.jdbc.sql :as sql]
-            [next.jdbc.result-set :as rs]
             [ring.mock.request :as mock]
             [core]
             [config :as config-src-dir]
             [config-test :refer [db-test]]
             [db.init-tables :as init-tables]
-            [db.models.patient :as patient]))
+            [db.models.patient :as patient]
+            [db.models.address :as address]))
 
 (defn mock-request [request-type url body]
   (core/wrapped-app (-> (mock/request request-type url)
@@ -30,30 +30,25 @@
     (let [mid "123426782326"]
       (mock-request-patient-add {:first-name "Homer"
                                  :last-name "Simpson"
-                                 :gender "male"
+                                 :gender "      male    "
                                  :birth-day 25
                                  :birth-month 12
                                  :birth-year 1965
                                  :city "        New YorK"
-                                 :street "Big apple"
+                                 :street "Big apple       "
                                  :house 20
                                  :mid mid})
-      (let [patient (first (sql/find-by-keys db-test :patient {:mid mid}
-                                             {:builder-fn rs/as-unqualified-lower-maps}))]
+      (let [patient (patient/get-by-mid mid)]
         (is (= (dissoc patient :birth :updated_at :created_at) {:first_name "Homer"
                                                                 :last_name "Simpson"
                                                                 :gender_type "Male"
                                                                 :mid mid}))
         (is (= (.toString (:birth patient)) "1965-12-25")))
-      (let [patient-address (jdbc/execute-one! db-test ["SELECT city, street, house FROM address
-                                                        WHERE id = (SELECT address_id FROM
-                                                        patient_address WHERE patient_mid = ?)"
-                                                        mid]
-                                               {:builder-fn rs/as-unqualified-lower-maps})]
+      (let [patient-address (address/get-by-mid mid)]
         (is (= patient-address {:city "New York" :street "Big Apple" :house 20})))))
 
   (testing "Patient gets existing address"
-    (let [city "New York" street "Yellow" house 22]
+    (let [city "New York" street "Yellow" house 22 same-address-second-mid "123426782327"]
       (mock-request-patient-add {:first-name "Santa"
                                  :last-name "Helper"
                                  :gender "male"
@@ -73,17 +68,14 @@
                                  :city city
                                  :street street
                                  :house house
-                                 :mid "123426782327"})
-      (let [patient-address (jdbc/execute-one! db-test ["SELECT city, street, house FROM address
-                                              WHERE id = (SELECT address_id FROM patient_address
-                                                           WHERE patient_mid = ?)" "123426782327"]
-                                               {:builder-fn rs/as-unqualified-lower-maps})
+                                 :mid same-address-second-mid})
+      (let [patient-address (address/get-by-mid same-address-second-mid)
             addresses (sql/find-by-keys db-test :address {:city city
                                                           :street street
-                                                          :house 22})]
+                                                          :house house})]
         (is (and (= patient-address {:city city
                                      :street street
-                                     :house 22}) (= 1 (count addresses)))))))
+                                     :house house}) (= 1 (count addresses)))))))
 
   (testing "Patient already exists"
     (let [patient {:first-name "Anonymous"
