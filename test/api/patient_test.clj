@@ -17,18 +17,18 @@
 (use-fixtures :once db-fixture)
 
 (deftest patient-add
-  (core/wrapped-app (-> (mock/request :post "/api/patient/add")
-                        (mock/json-body {:first-name "Homer"
-                                         :last-name "Simpson"
-                                         :gender "male"
-                                         :birth-day 25
-                                         :birth-month 12
-                                         :birth-year 1991
-                                         :city "        New YorK"
-                                         :street "Big apple"
-                                         :house 20
-                                         :mid "123426782326"})))
   (testing "Patient was saved formatted"
+    (core/wrapped-app (-> (mock/request :post "/api/patient/add")
+                          (mock/json-body {:first-name "Homer"
+                                           :last-name "Simpson"
+                                           :gender "male"
+                                           :birth-day 25
+                                           :birth-month 12
+                                           :birth-year 1965
+                                           :city "        New YorK"
+                                           :street "Big apple"
+                                           :house 20
+                                           :mid "123426782326"})))
     (let [patient (jdbc/execute-one! db-test ["SELECT first_name, last_name, gender_type, mid,
                                               birth
                                               FROM patient"]
@@ -37,5 +37,35 @@
                                       :last_name "Simpson"
                                       :gender_type "Male"
                                       :mid "123426782326"}))
-      (is (= (.toString (:birth patient)) "1991-12-25")))))
+      (is (= (.toString (:birth patient)) "1965-12-25"))))
+  (testing "Patient's address was saved"
+    (let [patient-address (jdbc/execute-one! db-test ["SELECT city, street, house FROM address
+                                              WHERE id = (SELECT address_id FROM patient_address
+                                                           WHERE patient_mid = ?)" "123426782326"]
+                                             {:builder-fn rs/as-unqualified-lower-maps})]
+
+      (is (= patient-address {:city "New York"
+                              :street "Big Apple"
+                              :house 20}))))
+  (testing "Next patient has address like previous one and address unique"
+    (core/wrapped-app (-> (mock/request :post "/api/patient/add")
+                          (mock/json-body {:first-name "Bart"
+                                           :last-name "Simpson"
+                                           :gender "male"
+                                           :birth-day 20
+                                           :birth-month 11
+                                           :birth-year 1989
+                                           :city "New york"
+                                           :street "big apple"
+                                           :house 20
+                                           :mid "123426782327"})))
+    (let [patient-address (jdbc/execute-one! db-test ["SELECT city, street, house FROM address
+                                              WHERE id = (SELECT address_id FROM patient_address
+                                                           WHERE patient_mid = ?)" "123426782327"]
+                                             {:builder-fn rs/as-unqualified-lower-maps})
+          addresses (jdbc/execute! db-test ["SELECT * FROM address"])]
+
+      (is (and (= patient-address {:city "New York"
+                                   :street "Big Apple"
+                                   :house 20}) (= 1 (count addresses)))))))
 
