@@ -29,10 +29,10 @@
                         (do (patient/edit formatted-patient-form) (message/success))
                         (message/error "Patient doesn't exist")))))
 
-(defn get-by-id [request]
-  {:status 200
-   :headers {"Content-Type" "application/json"}
-   :body "get"})
+(defn get-by-mid [request]
+  (if-let [patient-row (patient/get-by-mid (:mid (:body request)))]
+    (message/success patient-row)
+    (message/error "Patient doesn't exist")))
 
 (defn search [request]
   {:status 200

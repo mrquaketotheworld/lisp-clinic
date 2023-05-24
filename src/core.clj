@@ -15,7 +15,7 @@
        ["/add" {:post patient/add}]
        ["/delete" {:delete patient/delete}]
        ["/edit" {:post patient/edit}]
-       ["/get" {:get patient/get-by-id}]
+       ["/get" {:get patient/get-by-mid}]
        ["/search" {:get patient/search}]
        ["/get-all" {:get patient/get-all}]]]])
    (ring/create-default-handler
