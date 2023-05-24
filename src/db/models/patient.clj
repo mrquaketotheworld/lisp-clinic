@@ -2,12 +2,14 @@
   (:require [config :refer [db-config]]
             [next.jdbc :as jdbc]
             [next.jdbc.sql :as sql]
+            [next.jdbc.result-set :as rs]
             [db.models.address :as address]
             [db.models.patient-address :as patient-address])
   (:import [java.time LocalDate]))
 
 (defn get-by-mid [mid]
-  (first (sql/find-by-keys db-config :patient {:mid mid})))
+  (first (sql/find-by-keys db-config :patient {:mid mid}
+                           {:builder-fn rs/as-unqualified-lower-maps})))
 
 (defn assign-address [db-con mid city street house]
   (let [address-id (address/match-address db-con city street house)]
