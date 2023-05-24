@@ -3,7 +3,8 @@
    [db.models.patient :as patient]
    [utils.validation.patient :as validation-patient]
    [utils.format.patient :as format-patient]
-   [utils.format.message :as message]))
+   [utils.format.message :as message :refer [PATIENT-EXISTS PATIENT-DOESNT-EXIST
+                                             VALIDATION-ERROR]]))
 
 (defn add-edit [request callback]
   (let [patient-form (:body request)
@@ -11,12 +12,12 @@
     (if (validation-patient/is-patient-form-valid? formatted-patient-form)
       (let [patient-row (patient/get-by-mid (:mid formatted-patient-form))]
         (callback patient-row formatted-patient-form))
-      (message/error "Validation error"))))
+      (message/error VALIDATION-ERROR))))
 
 (defn add [request]
   (add-edit request (fn [patient-row formatted-patient-form]
                       (if patient-row
-                        (message/error "Patient already exists")
+                        (message/error PATIENT-EXISTS)
                         (do (patient/add formatted-patient-form) (message/success))))))
 
 (defn delete [request]
@@ -27,12 +28,12 @@
   (add-edit request (fn [patient-row formatted-patient-form]
                       (if patient-row
                         (do (patient/edit formatted-patient-form) (message/success))
-                        (message/error "Patient doesn't exist")))))
+                        (message/error PATIENT-DOESNT-EXIST)))))
 
 (defn get-by-mid [request]
   (if-let [patient (patient/get-by-mid (:mid (:body request)))]
     (message/success patient)
-    (message/error "Patient doesn't exist")))
+    (message/error PATIENT-DOESNT-EXIST)))
 
 (defn search [request]
   {:status 200
