@@ -1,6 +1,5 @@
 (ns db.models.address
-  (:require [next.jdbc :as jdbc]))
+  (:require [next.jdbc.sql :as sql]))
 
 (defn match-address [db-con city street house]
-  (jdbc/execute-one! db-con ["SELECT id FROM address WHERE city = ? and street = ? and house = ?"
-                             city street house]))
+  (first (sql/find-by-keys db-con :address {:city city :street street :house house})))
