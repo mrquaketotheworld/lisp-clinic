@@ -17,6 +17,7 @@
 (use-fixtures :once db-fixture)
 
 (deftest patient-add
+  (println 'RUN-PATIENT-ADD)
   (testing "Patient was saved formatted"
     (core/wrapped-app (-> (mock/request :post "/api/patient/add")
                           (mock/json-body {:first-name "Homer"
@@ -81,11 +82,11 @@
                                                           :house 20
                                                           :mid "123426782327"})))]
       (is (= "{\"error\":\"Patient already exists\"}" (:body response)))))
-  (testing "Patient successfully saved"
+  (testing "Patient was saved"
     (let [response (core/wrapped-app (-> (mock/request :post "/api/patient/add")
                                          (mock/json-body {:first-name "Liza"
                                                           :last-name "Simpson"
-                                                          :gender "male"
+                                                          :gender "Female"
                                                           :birth-day 30
                                                           :birth-month 10
                                                           :birth-year 1994
@@ -94,4 +95,23 @@
                                                           :house 20
                                                           :mid "123426782328"})))]
       (is (= "{\"success\":true}" (:body response))))))
+
+(deftest patient-delete
+  (println 'RUN-PATIENT-DELETE)
+  (testing "Patient was deleted"
+    (core/wrapped-app (-> (mock/request :post "/api/patient/add")
+                          (mock/json-body {:first-name "Marge"
+                                           :last-name "Simpson"
+                                           :gender "Female"
+                                           :birth-day 19
+                                           :birth-month 7
+                                           :birth-year 1970
+                                           :city "New york"
+                                           :street "big apple"
+                                           :house 20
+                                           :mid "123426782329"})))
+    (let [response (core/wrapped-app (-> (mock/request :delete "/api/patient/delete")
+                                         (mock/json-body {:mid "123426782329"})))
+          patient (jdbc/execute-one! db-test ["SELECT * FROM patient"])]
+      (is (and (= "{\"success\":true}" (:body response)) (nil? patient))))))
 
