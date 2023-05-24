@@ -2,6 +2,7 @@
   (:require [clojure.test :refer [deftest is testing use-fixtures]]
             [next.jdbc :as jdbc]
             [ring.mock.request :as mock]
+            [cheshire.core :as json]
             [core]
             [config :as config-src-dir]
             [config-test :refer [db-test]]
@@ -10,17 +11,26 @@
             [db.models.address :as address]))
 
 (defn mock-request [request-type url body]
-  (core/wrapped-app (-> (mock/request request-type url)
-                        (mock/json-body body))))
+  (:body (core/wrapped-app (-> (mock/request request-type url)
+                         (mock/json-body body)))))
 
 (defn mock-request-patient-add [body]
   (mock-request :post "/api/patient/add" body))
 
+(defn json-parse-body [body]
+  (json/parse-string body true))
+
+(defn mock-request-patient-get-by-mid [mid]
+  (json-parse-body (mock-request :get "/api/patient/get" {:mid mid})))
+
+(defn json-parse-error [body]
+  (:error (json-parse-body body)))
+
+(defn json-parse-success [body]
+  (:success (json-parse-body body)))
+
 (defn mock-request-patient-edit [body]
   (mock-request :post "/api/patient/edit" body))
-
-(defn patient-main-info [patient]
-  (dissoc patient :birth :updated_at :created_at))
 
 (defn db-fixture [test-run]
   (config-src-dir/set-config! db-test) ; make global TEST configuration
@@ -31,6 +41,7 @@
 
 (deftest patient-add
   (println 'RUN-PATIENT-ADD)
+
   (testing "Patient was saved formatted"
     (let [mid "123426782326"]
       (mock-request-patient-add {:first-name "Homer"
@@ -43,14 +54,15 @@
                                  :street "Big apple       "
                                  :house 20
                                  :mid mid})
-      (let [patient (patient/get-by-mid mid)
-            patient-address (address/get-by-mid mid)]
-        (is (= (patient-main-info patient) {:first_name "Homer"
-                                            :last_name "Simpson"
-                                            :gender_type "Male"
-                                            :mid mid}))
-        (is (= (:birth patient) "1965-12-25"))
-        (is (= patient-address {:city "New York" :street "Big Apple" :house 20})))))
+      (let [patient (mock-request-patient-get-by-mid mid)]
+        (is (= patient {:first_name "Homer"
+                        :last_name "Simpson"
+                        :gender_type "Male"
+                        :city "New York"
+                        :street "Big Apple"
+                        :house 20
+                        :birth "1965-12-25"
+                        :mid mid})))))
 
   (testing "Patient gets existing address"
     (let [city "New York" street "Yellow" house 22 same-address-second-mid "123426782327"]
@@ -92,11 +104,11 @@
                    :house 20
                    :mid "153426782327"}]
       (mock-request-patient-add patient)
-      (let [response (mock-request-patient-add patient)]
-        (is (= "{\"error\":\"Patient already exists\"}" (:body response))))))
+      (let [body (mock-request-patient-add patient)]
+        (is (= "Patient already exists" (json-parse-error body))))))
 
   (testing "Patient was saved"
-    (let [response (mock-request-patient-add {:first-name "Liza"
+    (let [body (mock-request-patient-add {:first-name "Liza"
                                               :last-name "Simpson"
                                               :gender "Female"
                                               :birth-day 30
@@ -106,22 +118,23 @@
                                               :street "big apple"
                                               :house 20
                                               :mid "123426782328"})]
-      (is (= "{\"success\":true}" (:body response)))))
+      (is (json-parse-success body))))
 
   (testing "Validation, patient without field"
-    (let [response (mock-request-patient-add {:first-name "Liza"
-                                              :last-name "Simpson"
-                                              :birth-day 30
-                                              :birth-month 10
-                                              :birth-year 1994
-                                              :city "New york"
-                                              :street "big apple"
-                                              :house 20
-                                              :mid "123426782328"})]
-      (is (= "{\"error\":\"Validation error\"}" (:body response))))))
+    (let [body (mock-request-patient-add {:first-name "Liza"
+                                                :last-name "Simpson"
+                                                :birth-day 30
+                                                :birth-month 10
+                                                :birth-year 1994
+                                                :city "New york"
+                                                :street "big apple"
+                                                :house 20
+                                                :mid "123426782328"})]
+      (is (= "Validation error" (json-parse-error body))))))
 
 (deftest patient-delete
   (println 'RUN-PATIENT-DELETE)
+
   (testing "Patient was deleted"
     (let [mid "123426782329"]
       (mock-request-patient-add {:first-name "Marge"
@@ -134,12 +147,13 @@
                                  :street "big apple"
                                  :house 20
                                  :mid mid})
-      (let [response (mock-request :delete "/api/patient/delete" {:mid mid})
+      (let [body (mock-request :delete "/api/patient/delete" {:mid mid})
             patient (patient/get-by-mid mid)]
-        (is (and (= "{\"success\":true}" (:body response)) (nil? patient)))))))
+        (is (and (json-parse-success body) (nil? patient)))))))
 
 (deftest patient-edit
   (println 'RUN-PATIENT-EDIT)
+
   (testing "Edit was edited"
     (let [mid "243283439393" new-first-name "Slim" new-last-name "Shady" gender "Male"
           new-city "Detroit" new-street "Snow" new-house 25]
@@ -163,23 +177,55 @@
                                   :street new-street
                                   :house new-house
                                   :mid mid})
-      (let [patient (patient/get-by-mid mid)
-            patient-address (address/get-by-mid mid)]
-        (is (= (patient-main-info patient) {:first_name new-first-name
-                                            :last_name new-last-name
-                                            :gender_type gender
-                                            :mid mid}))
-        (is (= (:birth patient) "1970-07-19"))
-        (is (= patient-address {:city new-city :street new-street :house new-house})))))
+      (let [patient (mock-request-patient-get-by-mid mid)]
+        (is (= patient {:first_name new-first-name
+                        :last_name new-last-name
+                        :gender_type gender
+                        :birth "1970-07-19"
+                        :city new-city
+                        :street new-street
+                        :house new-house
+                        :mid mid})))))
+
   (testing "Patient doesn't exist"
-    (let [response (mock-request-patient-edit {:first-name "John"
-                                               :last-name "Chan"
-                                               :gender "Male"
-                                               :birth-day 16
-                                               :birth-month 8
-                                               :birth-year 1981
-                                               :city "Tokio"
-                                               :street "Alex Yao"
-                                               :house 2
-                                               :mid "423838383838"})]
-      (is (= "{\"error\":\"Patient doesn't exist\"}" (:body response))))))
+    (let [body (mock-request-patient-edit {:first-name "John"
+                                                 :last-name "Chan"
+                                                 :gender "Male"
+                                                 :birth-day 16
+                                                 :birth-month 8
+                                                 :birth-year 1981
+                                                 :city "Tokio"
+                                                 :street "Alex Yao"
+                                                 :house 2
+                                                 :mid "423838383838"})]
+      (is (= "Patient doesn't exist" (json-parse-error body))))))
+
+(deftest patient-get
+  (println 'RUN-PATIENT-GET)
+
+  (testing "Get patient by mid"
+    (let [mid "34239202023f" first-name "Michael" last-name "Moe" gender "Male" city "Boston"
+          street "Flinstone" house 273]
+      (mock-request-patient-add {:first-name first-name
+                                 :last-name last-name
+                                 :gender gender
+                                 :birth-day 21
+                                 :birth-month 8
+                                 :birth-year 1973
+                                 :city city
+                                 :street street
+                                 :house house
+                                 :mid mid})
+      (let [patient (mock-request-patient-get-by-mid mid)]
+        (is (= patient {:first_name first-name
+                        :last_name last-name
+                        :gender_type gender
+                        :birth "1973-08-21"
+                        :city city
+                        :street street
+                        :house house
+                        :mid mid})))))
+
+  (testing "Get patient by unknown mid"
+    (let [patient (patient/get-by-mid "unknownmid32")]
+      (is (nil? patient)))))
