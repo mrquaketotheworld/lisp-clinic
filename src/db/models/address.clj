@@ -4,11 +4,11 @@
             [next.jdbc.result-set :as rs]
             [config :refer [db-config]]))
 
-(defn match-address [db-con city street house]
-   (sql/find-by-keys db-con :address {:city city :street street :house house}))
+(defn match-address [city street house]
+   (sql/find-by-keys db-config :address {:city city :street street :house house}))
 
-(defn get-address-id [db-con city street house]
-  (:address/id (first (match-address db-con city street house))))
+(defn get-address-id [city street house]
+  (:address/id (first (match-address city street house))))
 
 (defn add [db-con city street house]
   (:address/id (sql/insert! db-con :address
