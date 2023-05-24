@@ -1,7 +1,8 @@
 (ns db.models.patient
   (:require [config :refer [db-config]]
             [next.jdbc :as jdbc]
-            [next.jdbc.sql :as sql])
+            [next.jdbc.sql :as sql]
+            [db.models.address :as address])
   (:import [java.time LocalDate]))
 
 (defn does-exist? [mid]
@@ -16,9 +17,7 @@
                                   :birth (LocalDate/of birth-year birth-month birth-day)
                                   :mid mid})
 
-    (let [address-id (jdbc/execute-one! db-con ["SELECT id FROM address
-                                                WHERE city = ? and street = ? and house = ?"
-                                                city street house])]
+    (let [address-id (address/match-address db-con city street house)]
       (if address-id
         (sql/insert! db-con :patient_address {:patient_mid mid
                                               :address_id (:address/id address-id)})
@@ -40,9 +39,7 @@
                                   :birth (LocalDate/of birth-year birth-month birth-day)}
                  {:mid mid})
     (sql/delete! db-con :patient_address {:patient_mid mid})
-    (let [address-id (jdbc/execute-one! db-con ["SELECT id FROM address
-                                                WHERE city = ? and street = ? and house = ?"
-                                                city street house])]
+    (let [address-id (address/match-address db-con city street house)]
       (if address-id
         (sql/update! db-con :patient_address {:address_id (:address/id address-id)}
                      {:patient_mid mid})
