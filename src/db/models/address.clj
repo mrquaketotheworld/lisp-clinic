@@ -10,8 +10,8 @@
 (defn get-address-id [city street house]
   (:address/id (first (match-address city street house))))
 
-(defn add [db-con city street house]
-  (:address/id (sql/insert! db-con :address
+(defn add [connection city street house]
+  (:address/id (sql/insert! connection :address
                             {:city city :street street
                              :house house} {:return-keys ["id"]})))
 
