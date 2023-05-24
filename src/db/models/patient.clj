@@ -37,6 +37,6 @@
                                   :gender_type gender
                                   :birth (LocalDate/of birth-year birth-month birth-day)}
                  {:mid mid})
-    (sql/delete! db-con :patient_address {:patient_mid mid})
+    (patient-address/delete db-con mid)
     (assign-address db-con mid city street house)))
 
