@@ -49,7 +49,7 @@
                                             :last_name "Simpson"
                                             :gender_type "Male"
                                             :mid mid}))
-        (is (= (.toString (:birth patient)) "1965-12-25"))
+        (is (= (:birth patient) "1965-12-25"))
         (is (= patient-address {:city "New York" :street "Big Apple" :house 20})))))
 
   (testing "Patient gets existing address"
@@ -169,7 +169,7 @@
                                             :last_name new-last-name
                                             :gender_type gender
                                             :mid mid}))
-        (is (= (.toString (:birth patient)) "1970-07-19"))
+        (is (= (:birth patient) "1970-07-19"))
         (is (= patient-address {:city new-city :street new-street :house new-house})))))
   (testing "Patient doesn't exist"
     (let [response (mock-request-patient-edit {:first-name "John"

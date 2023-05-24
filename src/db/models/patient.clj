@@ -8,8 +8,9 @@
   (:import [java.time LocalDate]))
 
 (defn get-by-mid [mid]
-  (first (sql/find-by-keys db-config :patient {:mid mid}
-                           {:builder-fn rs/as-unqualified-lower-maps})))
+  (when-let [patient (first (sql/find-by-keys db-config :patient {:mid mid}
+                                              {:builder-fn rs/as-unqualified-lower-maps}))]
+    (assoc patient :birth (.toString (:birth patient)))))
 
 (defn assign-address [db-con mid city street house]
   (let [address-id (address/get-address-id city street house)]
