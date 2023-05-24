@@ -67,5 +67,31 @@
 
       (is (and (= patient-address {:city "New York"
                                    :street "Big Apple"
-                                   :house 20}) (= 1 (count addresses)))))))
+                                   :house 20}) (= 1 (count addresses))))))
+  (testing "User already exists"
+    (let [response (core/wrapped-app (-> (mock/request :post "/api/patient/add")
+                                         (mock/json-body {:first-name "Bart"
+                                                          :last-name "Simpson"
+                                                          :gender "male"
+                                                          :birth-day 20
+                                                          :birth-month 11
+                                                          :birth-year 1989
+                                                          :city "New york"
+                                                          :street "big apple"
+                                                          :house 20
+                                                          :mid "123426782327"})))]
+      (is (= "{\"error\":\"User already exists\"}" (:body response)))))
+  (testing "User successfully saved"
+    (let [response (core/wrapped-app (-> (mock/request :post "/api/patient/add")
+                                         (mock/json-body {:first-name "Liza"
+                                                          :last-name "Simpson"
+                                                          :gender "male"
+                                                          :birth-day 30
+                                                          :birth-month 10
+                                                          :birth-year 1994
+                                                          :city "New york"
+                                                          :street "big apple"
+                                                          :house 20
+                                                          :mid "123426782328"})))]
+      (is (= "{\"success\":true}" (:body response))))))
 

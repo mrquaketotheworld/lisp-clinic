@@ -11,7 +11,8 @@
     (if (patient/does-exist? (:mid formatted-patient-form))
       (message/error "User already exists")
       (if (validation-patient/is-patient-form-valid? formatted-patient-form)
-        (patient/add! formatted-patient-form)
+        (do (patient/add! formatted-patient-form)
+            (message/success))
         (message/error "Validation error")))))
 
 (defn delete [request]
