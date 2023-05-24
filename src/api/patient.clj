@@ -9,7 +9,7 @@
   (let [patient-form (:body request)
         formatted-patient-form (format-patient/format-patient-form patient-form)]
     (if (patient/does-exist? (:mid formatted-patient-form))
-      (message/error "User already exists")
+      (message/error "Patient already exists")
       (if (validation-patient/is-patient-form-valid? formatted-patient-form)
         (do (patient/add! formatted-patient-form)
             (message/success))

@@ -68,7 +68,7 @@
       (is (and (= patient-address {:city "New York"
                                    :street "Big Apple"
                                    :house 20}) (= 1 (count addresses))))))
-  (testing "User already exists"
+  (testing "Patient already exists"
     (let [response (core/wrapped-app (-> (mock/request :post "/api/patient/add")
                                          (mock/json-body {:first-name "Bart"
                                                           :last-name "Simpson"
@@ -80,8 +80,8 @@
                                                           :street "big apple"
                                                           :house 20
                                                           :mid "123426782327"})))]
-      (is (= "{\"error\":\"User already exists\"}" (:body response)))))
-  (testing "User successfully saved"
+      (is (= "{\"error\":\"Patient already exists\"}" (:body response)))))
+  (testing "Patient successfully saved"
     (let [response (core/wrapped-app (-> (mock/request :post "/api/patient/add")
                                          (mock/json-body {:first-name "Liza"
                                                           :last-name "Simpson"
