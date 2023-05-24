@@ -31,3 +31,24 @@
 (defn delete [mid]
   (jdbc/execute-one! db-config ["DELETE FROM patient WHERE mid = ?" mid]))
 
+(defn edit [{:keys [first-name last-name gender birth-day birth-month birth-year city street house
+                    mid]}]
+  (jdbc/with-transaction [db-con db-config]
+    (sql/update! db-con :patient {:first_name first-name
+                                  :last_name last-name
+                                  :gender_type gender
+                                  :birth (LocalDate/of birth-year birth-month birth-day)}
+                 {:mid mid})
+    (sql/delete! db-con :patient_address {:patient_mid mid})
+    (let [address-id (jdbc/execute-one! db-con ["SELECT id FROM address
+                                                WHERE city = ? and street = ? and house = ?"
+                                                city street house])]
+      (if address-id
+        (sql/update! db-con :patient_address {:address_id (:address/id address-id)}
+                     {:patient_mid mid})
+        (let [created-address-id (:address/id (sql/insert! db-con :address
+                                                           {:city city :street street
+                                                            :house house} {:return-keys ["id"]}))]
+          (sql/insert! db-con :patient_address {:patient_mid mid
+                                                :address_id created-address-id}))))))
+

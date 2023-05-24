@@ -20,7 +20,12 @@
   (message/success))
 
 (defn edit [request]
-  (message/success))
+  (let [patient-form (:body request)
+        formatted-patient-form (format-patient/format-patient-form patient-form)]
+    (if (validation-patient/is-patient-form-valid? formatted-patient-form)
+      (do (patient/edit formatted-patient-form)
+          (message/success))
+      (message/error "Validation error"))))
 
 (defn get-by-id [request]
   {:status 200
