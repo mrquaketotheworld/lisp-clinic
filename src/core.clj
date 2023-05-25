@@ -18,7 +18,7 @@
        ["/add" {:post patient/add}]
        ["/delete" {:delete patient/delete}]
        ["/edit" {:post patient/edit}]
-       ["/get" {:get patient/get-by-mid}]
+       ["/get/:mid" {:get patient/get-by-mid}]
        ["/search" {:get patient/search}]
        ["/get-all" {:get patient/get-all}]]]]
     {:data {:middleware [exception/exception-middleware]}})

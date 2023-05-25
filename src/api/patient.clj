@@ -31,7 +31,7 @@
                         (message/error PATIENT-DOESNT-EXIST)))))
 
 (defn get-by-mid [request]
-  (if-let [patient (patient/get-by-mid (:mid (:body request)))]
+  (if-let [patient (patient/get-by-mid (:mid (:path-params request)))]
     (message/success patient)
     (message/error PATIENT-DOESNT-EXIST)))
 

@@ -10,18 +10,24 @@
             [db.models.address :as address]
             [utils.format.message :refer [PATIENT-DOESNT-EXIST VALIDATION-ERROR PATIENT-EXISTS]]))
 
-(defn mock-request [request-type url body]
+(defn mock-request-get [url]
+  (:body (core/wrapped-app (mock/request :get url))))
+
+(defn mock-request-body [request-type url body]
   (:body (core/wrapped-app (-> (mock/request request-type url)
                          (mock/json-body body)))))
 
 (defn mock-request-patient-add [body]
-  (mock-request :post "/api/patient/add" body))
+  (mock-request-body :post "/api/patient/add" body))
 
 (defn json-parse-body [body]
   (json/parse-string body true))
 
 (defn mock-request-patient-get-by-mid [mid]
-  (json-parse-body (mock-request :get "/api/patient/get" {:mid mid})))
+  (json-parse-body (mock-request-get (str "/api/patient/get/" mid))))
+
+(defn mock-request-patient-search [query-string]
+  (json-parse-body (mock-request-get (str "/api/patient/search?" query-string))))
 
 (defn json-parse-error [body]
   (:error (json-parse-body body)))
@@ -30,7 +36,7 @@
   (:success (json-parse-body body)))
 
 (defn mock-request-patient-edit [body]
-  (mock-request :post "/api/patient/edit" body))
+  (mock-request-body :post "/api/patient/edit" body))
 
 (defn db-fixture [test-run]
   (config-src-dir/set-config! db-test) ; make global TEST configuration
@@ -147,7 +153,7 @@
                                  :street "big apple"
                                  :house 20
                                  :mid mid})
-      (let [body (mock-request :delete "/api/patient/delete" {:mid mid})
+      (let [body (mock-request-body :delete "/api/patient/delete" {:mid mid})
             patient (mock-request-patient-get-by-mid mid)]
         (is (and (json-parse-success body) (= PATIENT-DOESNT-EXIST (:error patient))))))))
 
@@ -229,3 +235,7 @@
   (testing "Get patient by unknown mid"
     (let [patient (mock-request-patient-get-by-mid "unknownmid32")]
       (is (= PATIENT-DOESNT-EXIST (:error patient))))))
+
+#_(deftest patient-search
+      (testing "Context of the test assertions"
+        (is (= assertion-values)))) 
