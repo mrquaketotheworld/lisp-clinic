@@ -47,15 +47,15 @@
     (patient-address/delete connection mid)
     (assign-address connection mid city street house)))
 
-(defn search [{:keys [first-name last-name gender city age-bottom age-top]}]
+(defn search [{:keys [first-name last-name mid gender city age-bottom age-top]}]
   (jdbc/execute! db-config
-                 ["SELECT * FROM patient
+                 ["SELECT first_name, last_name, gender, birth, city, street, house FROM patient
                     JOIN patient_address ON patient.mid =
                       patient_address.patient_mid
                     JOIN address ON patient_address.address_id = address.id
                       WHERE patient.gender = ? AND address.city = ? AND
                         AGE(patient.birth) BETWEEN CAST(? || ' years' AS interval)
                         AND CAST(? || ' years' AS interval) AND
-                        (patient.first_name ~* ? AND patient.last_name ~* ?)"
-                  gender city age-bottom age-top first-name last-name]
+                        (patient.first_name ~* ? AND patient.last_name ~* ? AND patient.mid ~* ?)"
+                  gender city age-bottom age-top first-name last-name mid]
                  {:builder-fn rs/as-unqualified-lower-maps}))

@@ -35,8 +35,11 @@
     (message/success patient)
     (message/error PATIENT-DOESNT-EXIST)))
 
-(defn search [request] ; TODO add validation/format
-  (message/success (patient/search (:params request))))
+(defn search [{patient-form :params}]
+  (let [formatted-patient-form (format-patient/format-patient-search-form patient-form)]
+    (if (validation-patient/is-patient-search-form-valid? formatted-patient-form)
+      (message/success (patient/search formatted-patient-form))
+      (message/error VALIDATION-ERROR))))
 
 (defn get-all [request]
   {:status 200
