@@ -1,4 +1,4 @@
-(ns utils.validation.patient
+(ns utils.validation.patient.new-form
   (:require [clojure.spec.alpha :as spec])
   (:import [java.time LocalDate]))
 
@@ -15,18 +15,10 @@
 (spec/def ::city #(<= (count %) CITY-MAXLENGTH))
 (spec/def ::street #(<= (count %) STREET-MAXLENGTH))
 (spec/def ::house int?)
-(spec/def ::mid #(<= (count %) MID-LENGTH))
+(spec/def ::mid #(= (count %) MID-LENGTH))
 (spec/def ::patient (spec/keys :req-un [::first-name ::last-name ::gender ::birth-day ::birth-month
                                         ::birth-year ::city ::street ::house ::mid]))
 
 (defn is-patient-form-valid? [patient]
   (spec/valid? ::patient patient))
-
-(spec/def ::age-bottom int?)
-(spec/def ::age-top int?)
-(spec/def ::patient-search (spec/keys :opt-un [::first-name ::last-name ::gender ::mid ::city
-                                               ::age-bottom ::age-top]))
-
-(defn is-patient-search-form-valid? [patient-search]
-  (spec/valid? ::patient-search patient-search))
 
