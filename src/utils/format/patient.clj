@@ -12,6 +12,12 @@
 
 (defn format-patient-search-form [patient-form]
   (let [formatted-patient-form (format-patient-form patient-form)]
-    (-> formatted-patient-form
+    (-> (merge {:first-name ""
+                :last-name ""
+                :gender ""
+                :mid ""
+                :city ""
+                :age-bottom "0"
+                :age-top "100"} formatted-patient-form) ; TODO select max
         (update :age-bottom read-string)
         (update :age-top read-string))))
