@@ -23,3 +23,9 @@
         (update :age-bottom read-string)
         (update :age-top read-string)
         (update :offset read-string))))
+
+(defn format-date [patient]
+  (assoc patient :birth (.toString (:birth patient))))
+
+(defn format-patients [patients]
+  (map #(format-date %) patients))

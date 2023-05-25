@@ -3,15 +3,20 @@
             [next.jdbc :as jdbc]
             [next.jdbc.sql :as sql]
             [next.jdbc.result-set :as rs]
+            [next.jdbc.date-time :as date-time]
             [db.models.address :as address]
-            [db.models.patient-address :as patient-address])
+            [db.models.patient-address :as patient-address]
+            [utils.format.patient :as patient-format])
   (:import [java.time LocalDate]))
+
+(date-time/read-as-local)
 
 (defn get-by-mid [mid]
   (when-let [patient (first (sql/find-by-keys db-config :patient {:mid mid}
                                               {:builder-fn rs/as-unqualified-lower-maps}))]
     (let [patient-address (address/get-by-mid mid)]
       (-> patient
+          patient-format/format-date
           (dissoc :updated_at :created_at)
           (merge patient-address)))))
 
@@ -52,18 +57,19 @@
         params [age-bottom age-top first-name last-name mid offset]
         params-city-optional (if empty-city? params (cons city params))
         params-city-gender-optional (if empty-gender? params-city-optional
-                                        (cons gender params-city-optional))]
-    (jdbc/execute! db-config
-                   (concat [(str "SELECT first_name, last_name, gender, birth, city, street, house
+                                        (cons gender params-city-optional))
+        patients (jdbc/execute! db-config
+                  (concat [(str "SELECT first_name, last_name, gender, birth, city, street, house
                                    FROM patient
                                    JOIN patient_address ON patient.mid =
                                      patient_address.patient_mid
                                    JOIN address ON patient_address.address_id = address.id
                                    WHERE " (when-not empty-gender? "patient.gender = ? AND ")
-                                 (when-not empty-city? "address.city = ? AND ")
-                                 "AGE(patient.birth) BETWEEN CAST(? || ' years' AS interval)
+                                            (when-not empty-city? "address.city = ? AND ")
+                                     "AGE(patient.birth) BETWEEN CAST(? || ' years' AS interval)
                                      AND CAST(? || ' years' AS interval) AND
                                      (patient.first_name ~* ? AND patient.last_name ~* ?
                                      AND patient.mid ~* ?) LIMIT 5 OFFSET ?")]
-                           params-city-gender-optional)
-                   {:builder-fn rs/as-unqualified-lower-maps})))
+                                        params-city-gender-optional)
+                                {:builder-fn rs/as-unqualified-lower-maps})]
+    (patient-format/format-patients patients)))
