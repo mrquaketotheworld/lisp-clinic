@@ -41,8 +41,3 @@
     (if (validation-patient-search-form/is-patient-search-form-valid? formatted-patient-form)
       (message/success (patient/search formatted-patient-form))
       (message/error VALIDATION-ERROR))))
-
-(defn get-all [request]
-  {:status 200
-   :headers {"Content-Type" "application/json"}
-   :body "get-all"})

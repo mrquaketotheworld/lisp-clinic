@@ -19,8 +19,7 @@
        ["/delete/:mid" {:delete patient/delete}]
        ["/edit" {:post patient/edit}]
        ["/get/:mid" {:get patient/get-by-mid}]
-       ["/search" {:get patient/search}]
-       ["/get-all" {:get patient/get-all}]]]]
+       ["/search" {:get patient/search}]]]]
     {:data {:middleware [exception/exception-middleware]}})
    (ring/create-default-handler
     {:not-found (constantly {:status 404, :body "Oops... Not found"})})))
