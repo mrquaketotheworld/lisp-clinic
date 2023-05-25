@@ -3,6 +3,8 @@
   (:require [ring.adapter.jetty :refer [run-jetty]]
             [ring.middleware.reload :refer [wrap-reload]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
+            [ring.middleware.keyword-params :refer [wrap-keyword-params]]
+            [ring.middleware.params :refer [wrap-params]]
             [db.init-tables :as init-tables]
             [reitit.ring :as ring]
             [api.patient :as patient]))
@@ -22,9 +24,9 @@
     {:not-found (constantly {:status 404, :body "Oops... Not found"})})))
 
 (def wrapped-app (->
-                   #'app
-                   (wrap-json-body {:keywords? true})
-                   wrap-json-response wrap-reload)) ; TODO fix before prod
+                  #'app
+                  (wrap-json-body {:keywords? true})
+                  wrap-json-response wrap-reload wrap-keyword-params wrap-params))
 
 (defn -main [& args]
   (if (= (first args) "init-tables")
