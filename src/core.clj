@@ -5,6 +5,7 @@
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.params :refer [wrap-params]]
+            [reitit.ring.middleware.exception :as exception]
             [db.init-tables :as init-tables]
             [reitit.ring :as ring]
             [api.patient :as patient]))
@@ -19,7 +20,8 @@
        ["/edit" {:post patient/edit}]
        ["/get" {:get patient/get-by-mid}]
        ["/search" {:get patient/search}]
-       ["/get-all" {:get patient/get-all}]]]])
+       ["/get-all" {:get patient/get-all}]]]]
+    {:data {:middleware [exception/exception-middleware]}})
    (ring/create-default-handler
     {:not-found (constantly {:status 404, :body "Oops... Not found"})})))
 
