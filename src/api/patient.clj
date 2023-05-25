@@ -35,11 +35,8 @@
     (message/success patient)
     (message/error PATIENT-DOESNT-EXIST)))
 
-(defn search [request]
-  ; search, filters {gender, city, age-bottom, age-top}
-  {:status 200
-   :headers {"Content-Type" "application/json"}
-   :body "search"})
+(defn search [request] ; TODO add validation/format
+  (message/success (patient/search (:params request))))
 
 (defn get-all [request]
   {:status 200

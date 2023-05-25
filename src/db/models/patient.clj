@@ -27,10 +27,10 @@
                    mid]}]
   (jdbc/with-transaction [connection db-config]
     (sql/insert! connection :patient {:first_name first-name
-                                  :last_name last-name
-                                  :gender gender
-                                  :birth (LocalDate/of birth-year birth-month birth-day)
-                                  :mid mid})
+                                      :last_name last-name
+                                      :gender gender
+                                      :birth (LocalDate/of birth-year birth-month birth-day)
+                                      :mid mid})
     (assign-address connection mid city street house)))
 
 (defn delete [mid]
@@ -40,10 +40,22 @@
                     mid]}]
   (jdbc/with-transaction [connection db-config]
     (sql/update! connection :patient {:first_name first-name
-                                  :last_name last-name
-                                  :gender gender
-                                  :birth (LocalDate/of birth-year birth-month birth-day)}
+                                      :last_name last-name
+                                      :gender gender
+                                      :birth (LocalDate/of birth-year birth-month birth-day)}
                  {:mid mid})
     (patient-address/delete connection mid)
     (assign-address connection mid city street house)))
 
+(defn search [{:keys [first-name last-name gender city age-bottom age-top]}]
+  (jdbc/execute! db-config
+                 ["SELECT * FROM patient
+                    JOIN patient_address ON patient.mid =
+                      patient_address.patient_mid
+                    JOIN address ON patient_address.address_id = address.id
+                      WHERE patient.gender = ? AND address.city = ? AND
+                        AGE(patient.birth) BETWEEN CAST(? || ' years' AS interval)
+                        AND CAST(? || ' years' AS interval) AND
+                        (patient.first_name ~* ? AND patient.last_name ~* ?)"
+                  gender city age-bottom age-top first-name last-name]
+                 {:builder-fn rs/as-unqualified-lower-maps}))
