@@ -57,7 +57,7 @@
       (let [patient (mock-request-patient-get-by-mid mid)]
         (is (= patient {:first_name "Homer"
                         :last_name "Simpson"
-                        :gender_type "Male"
+                        :gender "Male"
                         :city "New York"
                         :street "Big Apple"
                         :house 20
@@ -180,7 +180,7 @@
       (let [patient (mock-request-patient-get-by-mid mid)]
         (is (= patient {:first_name new-first-name
                         :last_name new-last-name
-                        :gender_type gender
+                        :gender gender
                         :birth "1970-07-19"
                         :city new-city
                         :street new-street
@@ -219,7 +219,7 @@
       (let [patient (mock-request-patient-get-by-mid mid)]
         (is (= patient {:first_name first-name
                         :last_name last-name
-                        :gender_type gender
+                        :gender gender
                         :birth "1973-08-21"
                         :city city
                         :street street

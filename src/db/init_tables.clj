@@ -5,18 +5,18 @@
 
 (defn create-table-gender []
   (jdbc/execute-one! db-config ["CREATE TABLE IF NOT EXISTS gender (
-                           gender_type VARCHAR(16) PRIMARY KEY,
+                           gender VARCHAR(16) PRIMARY KEY,
                            created_at timestamptz DEFAULT NOW() NOT NULL)"]))
 
 (defn add-genders []
-  (sql/insert-multi! db-config :gender [{:gender_type "Male"} {:gender_type "Female"}]))
+  (sql/insert-multi! db-config :gender [{:gender "Male"} {:gender "Female"}]))
 
 (defn create-table-patient []
   (jdbc/execute-one! db-config ["CREATE TABLE IF NOT EXISTS patient (
                            mid VARCHAR(12) PRIMARY KEY,
                            first_name VARCHAR(128) NOT NULL,
                            last_name VARCHAR(128) NOT NULL,
-                           gender_type VARCHAR(16) NOT NULL REFERENCES gender(gender_type),
+                           gender VARCHAR(16) NOT NULL REFERENCES gender(gender),
                            birth DATE NOT NULL,
                            created_at timestamptz DEFAULT NOW() NOT NULL,
                            updated_at timestamptz DEFAULT NOW() NOT NULL)"]))

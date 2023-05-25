@@ -36,6 +36,7 @@
     (message/error PATIENT-DOESNT-EXIST)))
 
 (defn search [request]
+  ; search, filters {gender, city, age-bottom, age-top}
   {:status 200
    :headers {"Content-Type" "application/json"}
    :body "search"})

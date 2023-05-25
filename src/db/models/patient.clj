@@ -28,7 +28,7 @@
   (jdbc/with-transaction [connection db-config]
     (sql/insert! connection :patient {:first_name first-name
                                   :last_name last-name
-                                  :gender_type gender
+                                  :gender gender
                                   :birth (LocalDate/of birth-year birth-month birth-day)
                                   :mid mid})
     (assign-address connection mid city street house)))
@@ -41,7 +41,7 @@
   (jdbc/with-transaction [connection db-config]
     (sql/update! connection :patient {:first_name first-name
                                   :last_name last-name
-                                  :gender_type gender
+                                  :gender gender
                                   :birth (LocalDate/of birth-year birth-month birth-day)}
                  {:mid mid})
     (patient-address/delete connection mid)
