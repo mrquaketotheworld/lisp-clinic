@@ -12,7 +12,6 @@
                                               {:builder-fn rs/as-unqualified-lower-maps}))]
     (let [patient-address (address/get-by-mid mid)]
       (-> patient
-          (assoc :birth (.toString (:birth patient)))
           (dissoc :updated_at :created_at)
           (merge patient-address)))))
 
@@ -47,15 +46,24 @@
     (patient-address/delete connection mid)
     (assign-address connection mid city street house)))
 
-(defn search [{:keys [first-name last-name mid gender city age-bottom age-top]}]
-  (jdbc/execute! db-config
-                 ["SELECT first_name, last_name, gender, birth, city, street, house FROM patient
-                    JOIN patient_address ON patient.mid =
-                      patient_address.patient_mid
-                    JOIN address ON patient_address.address_id = address.id
-                      WHERE patient.gender = ? AND address.city = ? AND
-                        AGE(patient.birth) BETWEEN CAST(? || ' years' AS interval)
-                        AND CAST(? || ' years' AS interval) AND
-                        (patient.first_name ~* ? AND patient.last_name ~* ? AND patient.mid ~* ?)"
-                  gender city age-bottom age-top first-name last-name mid]
-                 {:builder-fn rs/as-unqualified-lower-maps}))
+(defn search [{:keys [first-name last-name mid gender city age-bottom age-top offset]}]
+  (let [empty-city? (empty? city)
+        empty-gender? (empty? gender)
+        params [age-bottom age-top first-name last-name mid offset]
+        params-city-optional (if empty-city? params (cons city params))
+        params-city-gender-optional (if empty-gender? params-city-optional
+                                        (cons gender params-city-optional))]
+    (jdbc/execute! db-config
+                   (concat [(str "SELECT first_name, last_name, gender, birth, city, street, house
+                                   FROM patient
+                                   JOIN patient_address ON patient.mid =
+                                     patient_address.patient_mid
+                                   JOIN address ON patient_address.address_id = address.id
+                                   WHERE " (when-not empty-gender? "patient.gender = ? AND ")
+                                 (when-not empty-city? "address.city = ? AND ")
+                                 "AGE(patient.birth) BETWEEN CAST(? || ' years' AS interval)
+                                     AND CAST(? || ' years' AS interval) AND
+                                     (patient.first_name ~* ? AND patient.last_name ~* ?
+                                     AND patient.mid ~* ?) LIMIT 5 OFFSET ?")]
+                           params-city-gender-optional)
+                   {:builder-fn rs/as-unqualified-lower-maps})))

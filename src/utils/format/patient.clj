@@ -18,6 +18,8 @@
                 :mid ""
                 :city ""
                 :age-bottom "0"
-                :age-top "100"} formatted-patient-form) ; TODO select max
+                :age-top "100"
+                :offset "0"} formatted-patient-form) ; TODO select max
         (update :age-bottom read-string)
-        (update :age-top read-string))))
+        (update :age-top read-string)
+        (update :offset read-string))))
