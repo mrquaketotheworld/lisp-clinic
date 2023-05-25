@@ -16,7 +16,7 @@
     [["/api"
       ["/patient"
        ["/add" {:post patient/add}]
-       ["/delete" {:delete patient/delete}]
+       ["/delete/:mid" {:delete patient/delete}]
        ["/edit" {:post patient/edit}]
        ["/get/:mid" {:get patient/get-by-mid}]
        ["/search" {:get patient/search}]

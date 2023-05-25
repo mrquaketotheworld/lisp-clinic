@@ -21,7 +21,7 @@
                         (do (patient/add formatted-patient-form) (message/success))))))
 
 (defn delete [request]
-  (patient/delete (:mid (:body request)))
+  (patient/delete (:mid (:path-params request)))
   (message/success))
 
 (defn edit [request]

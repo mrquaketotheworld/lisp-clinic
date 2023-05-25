@@ -10,15 +10,21 @@
             [db.models.address :as address]
             [utils.format.message :refer [PATIENT-DOESNT-EXIST VALIDATION-ERROR PATIENT-EXISTS]]))
 
-(defn mock-request-get [url]
-  (:body (core/wrapped-app (mock/request :get url))))
+(defn mock-request [request-type url]
+  (:body (core/wrapped-app (mock/request request-type url))))
 
-(defn mock-request-body [request-type url body]
-  (:body (core/wrapped-app (-> (mock/request request-type url)
-                         (mock/json-body body)))))
+(defn mock-request-get [url]
+  (mock-request :get url))
+
+(defn mock-request-delete [mid]
+  (mock-request :delete (str "/api/patient/delete/" mid)))
+
+(defn mock-request-post [url body]
+  (:body (core/wrapped-app (-> (mock/request :post url)
+                               (mock/json-body body)))))
 
 (defn mock-request-patient-add [body]
-  (mock-request-body :post "/api/patient/add" body))
+  (mock-request-post "/api/patient/add" body))
 
 (defn json-parse-body [body]
   (json/parse-string body true))
@@ -36,7 +42,7 @@
   (:success (json-parse-body body)))
 
 (defn mock-request-patient-edit [body]
-  (mock-request-body :post "/api/patient/edit" body))
+  (mock-request-post "/api/patient/edit" body))
 
 (defn db-fixture [test-run]
   (config-src-dir/set-config! db-test) ; make global TEST configuration
@@ -115,27 +121,27 @@
 
   (testing "Patient was saved"
     (let [body (mock-request-patient-add {:first-name "Liza"
-                                              :last-name "Simpson"
-                                              :gender "Female"
-                                              :birth-day 30
-                                              :birth-month 10
-                                              :birth-year 1994
-                                              :city "New york"
-                                              :street "big apple"
-                                              :house 20
-                                              :mid "123426782328"})]
+                                          :last-name "Simpson"
+                                          :gender "Female"
+                                          :birth-day 30
+                                          :birth-month 10
+                                          :birth-year 1994
+                                          :city "New york"
+                                          :street "big apple"
+                                          :house 20
+                                          :mid "123426782328"})]
       (is (json-parse-success body))))
 
   (testing "Validation, patient without field"
     (let [body (mock-request-patient-add {:first-name "Liza"
-                                                :last-name "Simpson"
-                                                :birth-day 30
-                                                :birth-month 10
-                                                :birth-year 1994
-                                                :city "New york"
-                                                :street "big apple"
-                                                :house 20
-                                                :mid "123426782328"})]
+                                          :last-name "Simpson"
+                                          :birth-day 30
+                                          :birth-month 10
+                                          :birth-year 1994
+                                          :city "New york"
+                                          :street "big apple"
+                                          :house 20
+                                          :mid "123426782328"})]
       (is (= VALIDATION-ERROR (json-parse-error body))))))
 
 (deftest patient-delete
@@ -153,7 +159,7 @@
                                  :street "big apple"
                                  :house 20
                                  :mid mid})
-      (let [body (mock-request-body :delete "/api/patient/delete" {:mid mid})
+      (let [body (mock-request-delete mid)
             patient (mock-request-patient-get-by-mid mid)]
         (is (and (json-parse-success body) (= PATIENT-DOESNT-EXIST (:error patient))))))))
 
@@ -195,15 +201,15 @@
 
   (testing "Patient doesn't exist"
     (let [body (mock-request-patient-edit {:first-name "John"
-                                                 :last-name "Chan"
-                                                 :gender "Male"
-                                                 :birth-day 16
-                                                 :birth-month 8
-                                                 :birth-year 1981
-                                                 :city "Tokio"
-                                                 :street "Alex Yao"
-                                                 :house 2
-                                                 :mid "423838383838"})]
+                                           :last-name "Chan"
+                                           :gender "Male"
+                                           :birth-day 16
+                                           :birth-month 8
+                                           :birth-year 1981
+                                           :city "Tokio"
+                                           :street "Alex Yao"
+                                           :house 2
+                                           :mid "423838383838"})]
       (is (= PATIENT-DOESNT-EXIST (json-parse-error body))))))
 
 (deftest patient-get
@@ -237,5 +243,5 @@
       (is (= PATIENT-DOESNT-EXIST (:error patient))))))
 
 #_(deftest patient-search
-      (testing "Context of the test assertions"
-        (is (= assertion-values)))) 
+    (testing "Context of the test assertions"
+      (is (= assertion-values))))
