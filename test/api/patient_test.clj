@@ -47,11 +47,11 @@
   (mock-request-post "/api/patient/edit" body))
 
 (defn patients-count-equals? [patients value]
-  (= (count patients) value))
+  (is (= (count patients) value)))
 
 (defn found-patient-equals? [patients-found patient]
-  (is (and (= (first patients-found) (patient-format/format-patient-to-db-fields patient))
-           (patients-count-equals? patients-found 1))))
+  (is (= (first patients-found) (patient-format/format-patient-to-db-fields patient)))
+  (patients-count-equals? patients-found 1))
 
 (defn equals-error? [message error]
   (is (= message (:error error))))
@@ -302,15 +302,15 @@
 
     (testing "Search all from one city"
       (let [patients-found (mock-request-patient-search "city=New%20york")]
-        (is (patients-count-equals? patients-found 2))))
+        (patients-count-equals? patients-found 2)))
 
     (testing "Search last-name"
       (let [patients-found (mock-request-patient-search "last-name=Chan")]
-        (is (patients-count-equals? patients-found 3))))
+        (patients-count-equals? patients-found 3)))
 
     (testing "Search no params"
       (let [patients-found (mock-request-patient-search "")]
-        (is (patients-count-equals? patients-found 4))))
+        (patients-count-equals? patients-found 4)))
 
     (testing "Search mid"
       (let [patients-found (mock-request-patient-search (str "mid=" (:mid santa-claus-miami)))]
@@ -322,7 +322,7 @@
 
     (testing "Search half mid"
       (let [patients-found (mock-request-patient-search "mid=333")]
-        (is (patients-count-equals? patients-found 2))))
+        (patients-count-equals? patients-found 2)))
 
     (testing "Search half first-name, half last-name with spaces around"
       (let [patients-found (mock-request-patient-search "first-name=%20San&last-name=%20%20us%20")]
