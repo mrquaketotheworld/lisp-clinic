@@ -51,10 +51,10 @@
     (patient-address/delete connection mid)
     (assign-address connection mid city street house)))
 
-(defn search [{:keys [first-name last-name mid gender city age-bottom age-top offset]}]
+(defn search [{:keys [first-name last-name mid gender city age-bottom age-top limit offset]}]
   (let [empty-city? (empty? city)
         empty-gender? (empty? gender)
-        params [age-bottom (inc age-top) first-name last-name mid offset]
+        params [age-bottom (inc age-top) first-name last-name mid limit offset]
         params-city-optional (if empty-city? params (cons city params))
         params-city-gender-optional (if empty-gender? params-city-optional
                                         (cons gender params-city-optional))
@@ -70,7 +70,7 @@
                                      "AGE(patient.birth) BETWEEN CAST(? || ' years' AS interval)
                                      AND CAST(? || ' years' AS interval) AND
                                      (patient.first_name ~* ? AND patient.last_name ~* ?
-                                     AND patient.mid ~* ?) LIMIT 5 OFFSET ?")]
+                                     AND patient.mid ~* ?) LIMIT ? OFFSET ?")]
                                         params-city-gender-optional)
                                 {:builder-fn rs/as-unqualified-lower-maps})]
     (patient-format/format-patients patients)))
