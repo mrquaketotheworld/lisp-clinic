@@ -49,8 +49,11 @@
 (defn patients-count-equals? [patients value]
   (is (= (count patients) value)))
 
-(defn found-patient-equals? [patients-found patient]
-  (is (= (first patients-found) (patient-format/format-patient-to-db-fields patient)))
+(defn patient-equals? [patient-found patient]
+  (is (= patient-found (patient-format/format-patient-to-db-fields patient))))
+
+(defn found-patients-equals? [patients-found patient]
+  (patient-equals? (first patients-found) patient)
   (patients-count-equals? patients-found 1))
 
 (defn equals-error? [message error]
@@ -92,7 +95,7 @@
                          :mid  "123426782326"}]
       (mock-request-patient-add homer-simpson)
       (let [patient (mock-request-patient-get-by-mid (:mid homer-simpson))]
-        (is (= patient (patient-format/format-patient-to-db-fields homer-simpson))))))
+        (patient-equals? patient homer-simpson))))
 
   (testing "Patient gets existing address"
     (let [city "New York" street "Yellow" house 22 same-address-second-mid "123426782327"]
@@ -208,8 +211,7 @@
                                  :mid (:mid slim-shady-edit-patient-form)})
       (mock-request-patient-edit slim-shady-edit-patient-form)
       (let [patient (mock-request-patient-get-by-mid (:mid slim-shady-edit-patient-form))]
-        (is (= patient (patient-format/format-patient-to-db-fields
-                        slim-shady-edit-patient-form))))))
+        (patient-equals? patient slim-shady-edit-patient-form))))
 
   (testing "Patient doesn't exist"
     (let [body (mock-request-patient-edit {:first-name "John"
@@ -240,7 +242,7 @@
                        :house 273}]
       (mock-request-patient-add michael-moe)
       (let [patient (mock-request-patient-get-by-mid (:mid michael-moe))]
-        (is (= patient (patient-format/format-patient-to-db-fields michael-moe))))))
+        (patient-equals? patient michael-moe))))
 
   (testing "Get patient by unknown mid"
     (let [patient (mock-request-patient-get-by-mid "unknownmid32")]
@@ -298,7 +300,7 @@
                             (str "first-name=JacKIe&last-name=Chan&gender=Male&"
                                  "city=New%20york&age-bottom=92&age-top=93"
                                  "&mid=111111111111&offset=0"))]
-        (found-patient-equals? patients-found jackie-chan-new-york)))
+        (found-patients-equals? patients-found jackie-chan-new-york)))
 
     (testing "Search all from one city"
       (let [patients-found (mock-request-patient-search "city=New%20york")]
@@ -314,7 +316,7 @@
 
     (testing "Search mid"
       (let [patients-found (mock-request-patient-search (str "mid=" (:mid santa-claus-miami)))]
-        (found-patient-equals? patients-found santa-claus-miami)))
+        (found-patients-equals? patients-found santa-claus-miami)))
 
     (testing "Search unknown mid"
       (let [patients-found (mock-request-patient-search "mid=34jaf349jasl")]
@@ -326,7 +328,7 @@
 
     (testing "Search half first-name, half last-name with spaces around"
       (let [patients-found (mock-request-patient-search "first-name=%20San&last-name=%20%20us%20")]
-        (found-patient-equals? patients-found santa-claus-miami)))
+        (found-patients-equals? patients-found santa-claus-miami)))
 
     (testing "Search not valid mid"
       (let [patients-found (mock-request-patient-search "mid=333fsdfsdfsdfsfsd")]
@@ -342,4 +344,4 @@
 
     (testing "Search with offset 3"
       (let [patients-found (mock-request-patient-search "offset=3")]
-        (found-patient-equals? patients-found jackie-chan-boston)))))
+        (found-patients-equals? patients-found jackie-chan-boston)))))
