@@ -65,26 +65,19 @@
   (println 'RUN-PATIENT-ADD)
 
   (testing "Patient was saved formatted"
-    (let [mid "123426782326"]
-      (mock-request-patient-add {:first-name "Homer"
-                                 :last-name "Simpson"
-                                 :gender "      male    "
-                                 :birth-day 25
-                                 :birth-month 12
-                                 :birth-year 1965
-                                 :city "        New YorK"
-                                 :street "Big apple       "
-                                 :house 20
-                                 :mid mid})
-      (let [patient (mock-request-patient-get-by-mid mid)]
-        (is (= patient {:first_name "Homer"
-                        :last_name "Simpson"
-                        :gender "Male"
-                        :city "New York"
-                        :street "Big Apple"
-                        :house 20
-                        :birth "1965-12-25"
-                        :mid mid})))))
+    (let [homer-simpson {:first-name "Homer"
+                         :last-name "Simpson"
+                         :gender "      male    "
+                         :birth-day 25
+                         :birth-month 12
+                         :birth-year 1965
+                         :city "        New YorK"
+                         :street "Big apple       "
+                         :house 20
+                         :mid  "123426782326"}]
+      (mock-request-patient-add homer-simpson)
+      (let [patient (mock-request-patient-get-by-mid (:mid homer-simpson))]
+        (is (= patient (patient-format/format-patient-to-db-fields homer-simpson))))))
 
   (testing "Patient gets existing address"
     (let [city "New York" street "Yellow" house 22 same-address-second-mid "123426782327"]
@@ -177,8 +170,16 @@
   (println 'RUN-PATIENT-EDIT)
 
   (testing "Patient was edited"
-    (let [mid "243283439393" new-first-name "Slim" new-last-name "Shady" gender "Male"
-          new-city "Detroit" new-street "Snow" new-house 25]
+    (let [slim-shady-edit-patient-form {:mid "243283439393"
+                                        :first-name "Slim"
+                                        :last-name "Shady"
+                                        :gender "Male"
+                                        :city "Detroit"
+                                        :street "Snow"
+                                        :birth-day 19
+                                        :birth-month 7
+                                        :birth-year 1970
+                                        :house 25}]
       (mock-request-patient-add {:first-name "Marshall"
                                  :last-name "Mather"
                                  :gender "Male"
@@ -188,26 +189,11 @@
                                  :city "Compton"
                                  :street "Smith"
                                  :house 24
-                                 :mid mid})
-      (mock-request-patient-edit {:first-name new-first-name
-                                  :last-name new-last-name
-                                  :gender gender
-                                  :birth-day 19
-                                  :birth-month 7
-                                  :birth-year 1970
-                                  :city new-city
-                                  :street new-street
-                                  :house new-house
-                                  :mid mid})
-      (let [patient (mock-request-patient-get-by-mid mid)]
-        (is (= patient {:first_name new-first-name
-                        :last_name new-last-name
-                        :gender gender
-                        :birth "1970-07-19"
-                        :city new-city
-                        :street new-street
-                        :house new-house
-                        :mid mid})))))
+                                 :mid (:mid slim-shady-edit-patient-form)})
+      (mock-request-patient-edit slim-shady-edit-patient-form)
+      (let [patient (mock-request-patient-get-by-mid (:mid slim-shady-edit-patient-form))]
+        (is (= patient (patient-format/format-patient-to-db-fields
+                        slim-shady-edit-patient-form))))))
 
   (testing "Patient doesn't exist"
     (let [body (mock-request-patient-edit {:first-name "John"
@@ -226,27 +212,19 @@
   (println 'RUN-PATIENT-GET)
 
   (testing "Get patient by mid"
-    (let [mid "34239202023f" first-name "Michael" last-name "Moe" gender "Male" city "Boston"
-          street "Flinstone" house 273]
-      (mock-request-patient-add {:first-name first-name
-                                 :last-name last-name
-                                 :gender gender
-                                 :birth-day 21
-                                 :birth-month 8
-                                 :birth-year 1973
-                                 :city city
-                                 :street street
-                                 :house house
-                                 :mid mid})
-      (let [patient (mock-request-patient-get-by-mid mid)]
-        (is (= patient {:first_name first-name
-                        :last_name last-name
-                        :gender gender
-                        :birth "1973-08-21"
-                        :city city
-                        :street street
-                        :house house
-                        :mid mid})))))
+    (let [michael-moe {:mid "34239202023f"
+                       :first-name "Michael"
+                       :last-name "Moe"
+                       :gender "Male"
+                       :city "Boston"
+                       :street "Flinstone"
+                       :birth-day 21
+                       :birth-month 8
+                       :birth-year 1973
+                       :house 273}]
+      (mock-request-patient-add michael-moe)
+      (let [patient (mock-request-patient-get-by-mid (:mid michael-moe))]
+        (is (= patient (patient-format/format-patient-to-db-fields michael-moe))))))
 
   (testing "Get patient by unknown mid"
     (let [patient (mock-request-patient-get-by-mid "unknownmid32")]
