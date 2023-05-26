@@ -47,6 +47,16 @@
 (defn mock-request-patient-edit [body]
   (mock-request-post "/api/patient/edit" body))
 
+(defn patients-count-equals? [patients value]
+  (= (count patients) value))
+
+(defn found-patient-equals? [patients-found patient]
+  (is (and (= (first patients-found) (patient-format/format-patient-to-db-fields patient))
+           (patients-count-equals? patients-found 1))))
+
+(defn is-validation-error? [error]
+  (is (= VALIDATION-ERROR (:error error))))
+
 (defn db-fixture [test-run]
   (config-src-dir/set-config! db-test) ; make global TEST configuration
   (jdbc/execute-one! db-test ["DROP TABLE IF EXISTS address, gender, patient, patient_address"])
@@ -230,7 +240,7 @@
     (let [patient (mock-request-patient-get-by-mid "unknownmid32")]
       (is (= PATIENT-DOESNT-EXIST (:error patient))))))
 
-(deftest patient-search
+(deftest ^:test-x patient-search
   (println 'RUN-PATIENT-SEARCH)
   (let [jackie-chan-new-york {:first-name "Jackie"
                               :last-name "Chan"
@@ -261,7 +271,7 @@
                            :city "Miami"
                            :street "Beach"
                            :house 215
-                           :mid "111111111113"}
+                           :mid "333111111113"}
         jackie-chan-boston {:first-name "Jackie"
                             :last-name "Chan"
                             :gender "Male"
@@ -271,16 +281,59 @@
                             :city "Boston"
                             :street "Flow"
                             :house 26
-                            :mid "111111111114"}]
+                            :mid "333111111114"}]
     (mock-request-patient-add jackie-chan-new-york)
     (mock-request-patient-add rose-chan-new-york)
     (mock-request-patient-add santa-claus-miami)
     (mock-request-patient-add jackie-chan-boston)
+
     (testing "Search 1, all params"
       (let [patients-found (mock-request-patient-search
                             (str "first-name=JacKIe&last-name=Chan&gender=Male&"
                                  "city=New%20york&age-bottom=92&age-top=93"
                                  "&mid=111111111111&offset=0"))]
-        (is (and (= (first patients-found) (patient-format/format-patient-to-db-fields
-                                            jackie-chan-new-york))
-                 (= (count patients-found) 1)))))))
+        (found-patient-equals? patients-found jackie-chan-new-york)))
+
+    (testing "Search all from one city"
+      (let [patients-found (mock-request-patient-search "city=New%20york")]
+        (is (patients-count-equals? patients-found 2))))
+
+    (testing "Search last-name"
+      (let [patients-found (mock-request-patient-search "last-name=Chan")]
+        (is (patients-count-equals? patients-found 3))))
+
+    (testing "Search no params"
+      (let [patients-found (mock-request-patient-search "")]
+        (is (patients-count-equals? patients-found 4))))
+
+    (testing "Search mid"
+      (let [patients-found (mock-request-patient-search (str "mid=" (:mid santa-claus-miami)))]
+        (found-patient-equals? patients-found santa-claus-miami)))
+
+    (testing "Search unknown mid"
+      (let [patients-found (mock-request-patient-search "mid=34jaf349jasl")]
+        (is (empty? patients-found))))
+
+    (testing "Search half mid"
+      (let [patients-found (mock-request-patient-search "mid=333")]
+        (is (patients-count-equals? patients-found 2))))
+
+    (testing "Search half first-name, half last-name with spaces around"
+      (let [patients-found (mock-request-patient-search "first-name=%20San&last-name=%20%20us%20")]
+        (found-patient-equals? patients-found santa-claus-miami)))
+
+    (testing "Search not valid mid"
+      (let [patients-found (mock-request-patient-search "mid=333fsdfsdfsdfsfsd")]
+        (is-validation-error? patients-found)))
+
+    (testing "Search not valid first-name"
+      (let [patients-found (mock-request-patient-search (str "first-name=mmidx333fsdfsdfsdfsfs"
+                                                             "dmidx333fsdfsdfsfsdmidx333fsdfsdf"
+                                                             "sdfsfsdidx333fsdfsdfsdfsfsdmidx33"
+                                                             "3fsdfsdfsdfsfsdmidx333fsdfsdfsdfs"
+                                                             "fsdmidx333fsdfsdfsdfsfsd"))]
+        (is-validation-error? patients-found)))
+
+    (testing "Search with offset 3"
+      (let [patients-found (mock-request-patient-search "offset=3")]
+        (found-patient-equals? patients-found jackie-chan-boston)))))
