@@ -8,7 +8,8 @@
             [config-test :refer [db-test]]
             [db.init-tables :as init-tables]
             [db.models.address :as address]
-            [utils.format.message :refer [PATIENT-DOESNT-EXIST VALIDATION-ERROR PATIENT-EXISTS]]))
+            [utils.format.message :refer [PATIENT-DOESNT-EXIST VALIDATION-ERROR PATIENT-EXISTS]]
+            [utils.format.patient :as patient-format]))
 
 (defn mock-request [request-type url]
   (:body (core/wrapped-app (mock/request request-type url))))
@@ -30,7 +31,9 @@
   (json/parse-string body true))
 
 (defn mock-request-patient-get-by-mid [mid]
-  (json-parse-body (mock-request-get (str "/api/patient/get/" mid))))
+  (-> (str "/api/patient/get/" mid)
+      mock-request-get
+      json-parse-body))
 
 (defn mock-request-patient-search [query-string]
   (json-parse-body (mock-request-get (str "/api/patient/search?" query-string))))
@@ -173,7 +176,7 @@
 (deftest patient-edit
   (println 'RUN-PATIENT-EDIT)
 
-  (testing "Edit was edited"
+  (testing "Patient was edited"
     (let [mid "243283439393" new-first-name "Slim" new-last-name "Shady" gender "Male"
           new-city "Detroit" new-street "Snow" new-house 25]
       (mock-request-patient-add {:first-name "Marshall"
@@ -249,6 +252,57 @@
     (let [patient (mock-request-patient-get-by-mid "unknownmid32")]
       (is (= PATIENT-DOESNT-EXIST (:error patient))))))
 
-#_(deftest patient-search
-    (testing "Context of the test assertions"
-      (is (= assertion-values))))
+(deftest patient-search
+  (println 'RUN-PATIENT-SEARCH)
+  (let [jackie-chan-new-york {:first-name "Jackie"
+                              :last-name "Chan"
+                              :gender "male"
+                              :birth-day 13
+                              :birth-month 2
+                              :birth-year 1930
+                              :city "        New York"
+                              :street "Big apple"
+                              :house 20
+                              :mid "111111111111"}
+        rose-chan-new-york {:first-name "Rose"
+                            :last-name "Chan"
+                            :gender "Female"
+                            :birth-day 2
+                            :birth-month 10
+                            :birth-year 1932
+                            :city "        New York"
+                            :street "Big apple"
+                            :house 20
+                            :mid "111111111112"}
+        santa-claus-miami {:first-name "Santa"
+                           :last-name "Claus"
+                           :gender "Male"
+                           :birth-day 3
+                           :birth-month 1
+                           :birth-year 1939
+                           :city "Miami"
+                           :street "Beach"
+                           :house 215
+                           :mid "111111111113"}
+        jackie-chan-boston {:first-name "Jackie"
+                            :last-name "Chan"
+                            :gender "Male"
+                            :birth-day 13
+                            :birth-month 2
+                            :birth-year 1930
+                            :city "Boston"
+                            :street "Flow"
+                            :house 26
+                            :mid "111111111114"}]
+    (mock-request-patient-add jackie-chan-new-york)
+    (mock-request-patient-add rose-chan-new-york)
+    (mock-request-patient-add santa-claus-miami)
+    (mock-request-patient-add jackie-chan-boston)
+    (testing "Search 1, all params"
+      (let [patients-found (mock-request-patient-search
+                            (str "first-name=JacKIe&last-name=Chan&gender=Male&"
+                                 "city=New%20york&age-bottom=92&age-top=93"
+                                 "&mid=111111111111&offset=0"))]
+        (is (and (= (first patients-found) (patient-format/format-patient-to-db-fields
+                                            jackie-chan-new-york))
+                 (= (count patients-found) 1)))))))

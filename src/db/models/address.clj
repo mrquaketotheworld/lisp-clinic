@@ -15,7 +15,7 @@
                             {:city city :street street
                              :house house} {:return-keys ["id"]})))
 
-(defn get-by-mid [mid]
+(defn get-by-mid [mid] ; TODO add JOIN?
   (jdbc/execute-one! db-config ["SELECT city, street, house FROM address
                                 WHERE id = (SELECT address_id FROM
                                 patient_address WHERE patient_mid = ?)" mid]

@@ -1,6 +1,7 @@
 (ns utils.format.patient
   (:require [clojure.string :as string]
-            [utils.format.capitalize :as format-capitalize]))
+            [utils.format.capitalize :as format-capitalize])
+  (:import [java.time LocalDate]))
 
 (defn format-patient-form [patient-form]
   (reduce (fn [acc key-value]
@@ -29,3 +30,15 @@
 
 (defn format-patients [patients]
   (map #(format-date %) patients))
+
+(defn format-patient-to-db-fields [patient]
+  (format-patient-form {:first_name (:first-name patient)
+                        :last_name (:last-name patient)
+                        :gender (:gender patient)
+                        :birth (.toString (LocalDate/of (:birth-year patient)
+                                                        (:birth-month patient)
+                                                        (:birth-day patient)))
+                        :city (:city patient)
+                        :street (:street patient)
+                        :house (:house patient)
+                        :mid (:mid patient)}))

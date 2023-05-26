@@ -54,12 +54,13 @@
 (defn search [{:keys [first-name last-name mid gender city age-bottom age-top offset]}]
   (let [empty-city? (empty? city)
         empty-gender? (empty? gender)
-        params [age-bottom age-top first-name last-name mid offset]
+        params [age-bottom (inc age-top) first-name last-name mid offset]
         params-city-optional (if empty-city? params (cons city params))
         params-city-gender-optional (if empty-gender? params-city-optional
                                         (cons gender params-city-optional))
         patients (jdbc/execute! db-config
-                  (concat [(str "SELECT first_name, last_name, gender, birth, city, street, house
+                  (concat [(str "SELECT first_name, last_name, gender, birth, city, street, house,
+                                    mid
                                    FROM patient
                                    JOIN patient_address ON patient.mid =
                                      patient_address.patient_mid
