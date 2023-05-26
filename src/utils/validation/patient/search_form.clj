@@ -10,10 +10,11 @@
 (spec/def ::city #(<= (count %) CITY-MAXLENGTH))
 (spec/def ::mid #(<= (count %) MID-LENGTH))
 (spec/def ::offset int?)
+(spec/def ::limit int?)
 (spec/def ::age-bottom int?)
 (spec/def ::age-top int?)
 (spec/def ::patient-search (spec/keys :req-un [::first-name ::last-name ::gender ::mid ::city
-                                               ::age-bottom ::age-top ::offset]))
+                                               ::age-bottom ::age-top ::limit ::offset]))
 
 (defn is-patient-search-form-valid? [patient-search]
   (spec/valid? ::patient-search patient-search))

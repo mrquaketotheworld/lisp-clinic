@@ -48,6 +48,6 @@
   (println 'INIT-TABLES)
   (create-table-gender)
   (add-genders)
+  (create-table-address)
   (create-table-patient)
-  (add-patient-update-at-trigger)
-  (create-table-address))
+  (add-patient-update-at-trigger))

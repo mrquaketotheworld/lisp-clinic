@@ -7,7 +7,6 @@
             [config :as config-src-dir]
             [config-test :refer [db-test]]
             [db.init-tables :as init-tables]
-            [db.models.address :as address]
             [utils.format.message :refer [PATIENT-DOESNT-EXIST VALIDATION-ERROR PATIENT-EXISTS]]
             [utils.format.patient :as patient-format]))
 
@@ -67,14 +66,13 @@
 
 (defn db-fixture [test-run]
   (config-src-dir/set-config! db-test) ; make global TEST configuration
-  (jdbc/execute-one! db-test ["DROP TABLE IF EXISTS address, gender, patient, patient_address"])
+  (jdbc/execute-one! db-test ["DROP TABLE IF EXISTS address, gender, patient"])
   (init-tables/-main)
   (test-run))
 (use-fixtures :once db-fixture)
 
 (defn clear-tables-fixture [test-run]
   (jdbc/execute! db-test ["DELETE FROM patient;
-                           DELETE FROM patient_address;
                            DELETE FROM address"])
   (test-run))
 (use-fixtures :each clear-tables-fixture)
@@ -98,7 +96,17 @@
         (patient-equals? patient homer-simpson))))
 
   (testing "Patient gets existing address"
-    (let [city "New York" street "Yellow" house 22 same-address-second-mid "123426782327"]
+    (let [city "New York" street "Yellow" house 22
+          bart-simpson {:first-name "Bart"
+                        :last-name "Simpson"
+                        :gender "male"
+                        :birth-day 20
+                        :birth-month 11
+                        :birth-year 1989
+                        :city city
+                        :street street
+                        :house house
+                        :mid "123426782327"}]
       (mock-request-patient-add {:first-name "Santa"
                                  :last-name "Helper"
                                  :gender "male"
@@ -109,21 +117,9 @@
                                  :street street
                                  :house house
                                  :mid "023426782327"})
-      (mock-request-patient-add {:first-name "Bart"
-                                 :last-name "Simpson"
-                                 :gender "male"
-                                 :birth-day 20
-                                 :birth-month 11
-                                 :birth-year 1989
-                                 :city city
-                                 :street street
-                                 :house house
-                                 :mid same-address-second-mid})
-      (let [patient-address (address/get-by-mid same-address-second-mid)
-            addresses (address/match-address city street house)]
-        (is (and (= patient-address {:city city
-                                     :street street
-                                     :house house}) (= 1 (count addresses)))))))
+      (mock-request-patient-add bart-simpson)
+      (let [patient (mock-request-patient-get-by-mid (:mid bart-simpson))]
+        (patient-equals? patient bart-simpson))))
 
   (testing "Patient already exists"
     (let [patient {:first-name "Anonymous"
@@ -248,7 +244,7 @@
     (let [patient (mock-request-patient-get-by-mid "unknownmid32")]
       (patient-doesnt-exist? patient))))
 
-(deftest ^:test-x patient-search
+(deftest patient-search
   (println 'RUN-PATIENT-SEARCH)
   (let [jackie-chan-new-york {:first-name "Jackie"
                               :last-name "Chan"
