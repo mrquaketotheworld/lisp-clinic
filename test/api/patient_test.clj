@@ -51,6 +51,13 @@
   (test-run))
 (use-fixtures :once db-fixture)
 
+(defn clear-tables-fixture [test-run]
+  (jdbc/execute! db-test ["DELETE FROM patient;
+                           DELETE FROM patient_address;
+                           DELETE FROM address"])
+  (test-run))
+(use-fixtures :each clear-tables-fixture)
+
 (deftest patient-add
   (println 'RUN-PATIENT-ADD)
 
