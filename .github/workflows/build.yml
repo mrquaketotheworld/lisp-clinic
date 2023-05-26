@@ -6,7 +6,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Install Clojure
+      - name: Install Clojure [skip ci]
         run: |
           curl -O https://download.clojure.org/install/linux-install-1.11.1.1273.sh
           chmod +x linux-install-1.11.1.1273.sh
