@@ -3,5 +3,4 @@
 .clj-kondo
 .lsp
 config.edn
-test_config.edn
 /target
