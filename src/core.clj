@@ -10,7 +10,7 @@
             [reitit.ring :as ring]
             [api.patient :as patient]
             [config]
-            [utils.file.interact :as ile])) ; TODO test
+            [utils.file.interact :as file]))
 
 (def app
   (ring/ring-handler
