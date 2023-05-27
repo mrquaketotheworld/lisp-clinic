@@ -8,7 +8,9 @@
             [reitit.ring.middleware.exception :as exception]
             [db.init-tables :as init-tables]
             [reitit.ring :as ring]
-            [api.patient :as patient]))
+            [api.patient :as patient]
+            [config]
+            [utils.file.interact :as file]))
 
 (def app
   (ring/ring-handler
@@ -30,6 +32,7 @@
                   wrap-json-response wrap-reload wrap-keyword-params wrap-params))
 
 (defn -main [& args]
+  (config/set-config! (file/load-edn "prod_config.edn"))
   (if (= (first args) "init-tables")
     (init-tables/-main)
     (run-jetty wrapped-app {:port 3000 :join? false})))

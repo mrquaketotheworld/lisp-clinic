@@ -5,10 +5,15 @@
             [cheshire.core :as json]
             [core]
             [config :as config-src-dir]
-            [config-test :refer [db-test]]
             [db.init-tables :as init-tables]
             [utils.format.message :refer [PATIENT-DOESNT-EXIST VALIDATION-ERROR PATIENT-EXISTS]]
             [utils.format.patient :as patient-format]))
+
+(def db-test {:dbtype "postgresql"
+              :dbname "postgres"
+              :host "localhost"
+              :user "postgres"
+              :password "postgres"})
 
 (defn json-parse-body [body]
   (json/parse-string body true))
