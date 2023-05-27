@@ -5,6 +5,7 @@
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.params :refer [wrap-params]]
+            [ring.util.response :refer [file-response]]
             [reitit.ring.middleware.exception :as exception]
             [db.init-tables :as init-tables]
             [reitit.ring :as ring]
@@ -24,7 +25,7 @@
        ["/search" {:get patient/search}]]]]
     {:data {:middleware [exception/exception-middleware]}})
    (ring/create-default-handler
-    {:not-found (constantly {:status 404, :body "Oops... Not found"})})))
+    {:not-found (fn [_] (file-response "public/index.html"))})))
 
 (def wrapped-app (->
                   #'app
