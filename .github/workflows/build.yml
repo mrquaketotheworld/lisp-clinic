@@ -1,20 +1,20 @@
 name: Build
 on: push
 jobs:
-  # lint:
-  #   runs-on: ubuntu-22.04
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
-  #     - name: Install Clojure
-  #       run: |
-  #         curl -O https://download.clojure.org/install/linux-install-1.11.1.1273.sh
-  #         chmod +x linux-install-1.11.1.1273.sh
-  #         sudo ./linux-install-1.11.1.1273.sh
-  #     - name: Lint
-  #       run: clojure -M:lint
-  test:
+  lint:
     runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Clojure
+        run: |
+          curl -O https://download.clojure.org/install/linux-install-1.11.1.1273.sh
+          chmod +x linux-install-1.11.1.1273.sh
+          sudo ./linux-install-1.11.1.1273.sh
+      - name: Lint
+        run: clojure -M:lint
+  test:
+    needs: [lint]
     services:
       postgres:
         image: postgres
@@ -28,12 +28,5 @@ jobs:
         ports:
           - 5432:5432
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install Clojure
-        run: |
-          curl -O https://download.clojure.org/install/linux-install-1.11.1.1273.sh
-          chmod +x linux-install-1.11.1.1273.sh
-          sudo ./linux-install-1.11.1.1273.sh
       - name: Test
         run: clojure -M:test
