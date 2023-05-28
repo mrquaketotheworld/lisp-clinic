@@ -2,5 +2,5 @@
 .nrepl-port
 .clj-kondo
 .lsp
-prod_config.edn
+config.edn
 /target

@@ -33,7 +33,7 @@
                   wrap-json-response wrap-reload wrap-keyword-params wrap-params))
 
 (defn -main [& args]
-  (config/set-config! (file/load-edn "prod_config.edn"))
+  (config/set-config! (file/load-edn "config.edn"))
   (if (= (first args) "init-tables")
     (init-tables/-main)
     (run-jetty wrapped-app {:port 3000 :join? false})))
