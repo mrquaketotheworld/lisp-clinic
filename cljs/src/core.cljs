@@ -3,5 +3,5 @@
             [reagent.dom :as rdom]
             [re-frame.core :as rf]))
 
-(defn main []
-  (js/alert "ello world"))
+(defn ^:dev/after-load main []
+  (js/console.log "hello world!!!"))
