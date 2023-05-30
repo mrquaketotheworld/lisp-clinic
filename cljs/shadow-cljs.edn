@@ -7,13 +7,12 @@
  :nrepl {:port 8777}
  :dev-http {8000 "public"}
  :builds {:client {:target :browser
-                   :output-dir "public/js"
+                   :output-dir "../clj/public/js"
                    :modules {:client {:init-fn core/main}}
                    :devtools {:preloads [day8.re-frame-10x.preload]}
                    :dev {:compiler-options
                          {:closure-defines {re-frame.trace.trace-enabled? true
                                             day8.re-frame.tracing.trace-enabled? true}}}
-                   :release {:compiler-options { :optimizations :none }
-                             :build-options
+                   :release {:build-options
                              {:ns-aliases
                               {day8.re-frame.tracing day8.re-frame.tracing-stubs}}}}}}
