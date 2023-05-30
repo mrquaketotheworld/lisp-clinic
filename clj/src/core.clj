@@ -6,6 +6,7 @@
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.params :refer [wrap-params]]
             [ring.util.response :refer [file-response]]
+            [ring.middleware.file :refer [wrap-file]]
             [reitit.ring.middleware.exception :as exception]
             [db.init-tables :as init-tables]
             [reitit.ring :as ring]
@@ -29,6 +30,7 @@
 
 (def wrapped-app (->
                   #'app
+                  (wrap-file "public")
                   (wrap-json-body {:keywords? true})
                   wrap-json-response wrap-reload wrap-keyword-params wrap-params))
 
