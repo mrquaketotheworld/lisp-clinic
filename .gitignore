@@ -4,3 +4,5 @@
 .lsp
 config.edn
 target
+.shadow-cljs
+cljs/public/js
