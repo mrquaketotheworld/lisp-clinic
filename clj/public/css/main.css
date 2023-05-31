@@ -14,3 +14,7 @@ table {
 .gender-simple select {
   width: 100%;
 }
+
+table td, .table th {
+  vertical-align: middle !important;
+}
