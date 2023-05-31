@@ -1,7 +1,15 @@
 (ns core
-  (:require [reagent.core :as reagent]
-            [reagent.dom :as rdom]
-            [re-frame.core :as rf]))
+  (:require [reagent.dom]
+            [re-frame.core :as rf]
+            [views]))
 
-(defn ^:dev/after-load main []
-  (js/console.log "hello world!!!"))
+(defn render []
+  (reagent.dom/render [views/app] (js/document.getElementById "app")))
+
+(defn ^:dev/after-load clear-cache-and-render! []
+  (rf/clear-subscription-cache!)
+  (render))
+
+(defn -main []
+  ; (rf/dispatch-sync [:initialize])
+  (render))

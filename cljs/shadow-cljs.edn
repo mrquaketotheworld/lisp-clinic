@@ -7,7 +7,7 @@
  :nrepl {:port 8777}
  :builds {:client {:target :browser
                    :output-dir "../clj/public/js"
-                   :modules {:client {:init-fn core/main}}
+                   :modules {:client {:init-fn core/-main}}
                    :devtools {:preloads [day8.re-frame-10x.preload]}
                    :dev {:compiler-options
                          {:closure-defines {re-frame.trace.trace-enabled? true
