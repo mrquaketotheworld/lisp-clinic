@@ -1,4 +1,13 @@
-(ns views) ; TOOD remove redundant CSS
+(ns views
+  (:require [re-frame.core :as rf]
+            [events]
+            [subs])) ; TOOD refactor views
+
+(defn show-modal []
+  (rf/dispatch [:is-modal-active? true]))
+
+(defn hide-modal []
+  (rf/dispatch [:is-modal-active? false]))
 
 (defn pagination []
   [:nav.pagination
@@ -33,12 +42,12 @@
      [:i.fa-regular.fa-person-circle-question]]]])
 
 (defn modal []
-  [:div.modal.is-active
+  [:div.modal {:class (when @(rf/subscribe [:is-modal-active?]) "is-active")}
    [:div.modal-background]
    [:div.modal-card
     [:header.modal-card-head
      [:p.modal-card-title "title"]
-     [:button.delete]]
+     [:button.delete {:on-click hide-modal}]]
     [:section.modal-card-body
      [:div.columns
       [input "First Name" "first-name" "Homer" "fa-solid fa-address-card"]
@@ -59,7 +68,7 @@
 
     [:footer.modal-card-foot
      [:button.button.is-success "Saved"]
-     [:button.button "Cancel"]]]])
+     [:button.button {:on-click hide-modal} "Cancel"]]]])
 
 (defn select-age [select-name default-option]
   [:div.control.has-icons-left
@@ -68,12 +77,6 @@
      (map (fn [i] [:option {:value i :key i} i]) (range 101))]]
    [:div.icon.is-small.is-left
     [:i.fa-solid.fa-list-ol]]])
-
-(defn select-age-bottom []
-  [select-age "age-bottom" "0"])
-
-(defn select-age-top []
-  [select-age "age-top" "100"])
 
 (defn select-city []
   [:div.control.has-icons-left
@@ -104,8 +107,8 @@
     [:div.column [select-gender]]
     [:div.column
      [:div.field [:label.label "Age"] [:div.field.is-grouped
-                                       [select-age-bottom]
-                                       [select-age-top]]]]
+                                       [select-age "age-bottom" "0"]
+                                       [select-age "age-top" "100"]]]]
     [:div.column [:div.field [:label.label "City"] [select-city]]]
     [:div.column.is-two-fifths.is-align-self-flex-end
      [:div.field.is-grouped
@@ -131,7 +134,7 @@
        [:th "Birth"]
        [:th "Address"]
        [:th "MID"]
-       [:th.has-text-right [:button.button.is-info.is-pull-right
+       [:th.has-text-right [:button.button.is-info.is-pull-right {:on-click show-modal}
                             [:span.icon.is-small
                              [:i.fa-solid.fa-user-plus]]
                             [:span "Add patient"]]]]]
@@ -156,5 +159,5 @@
   [:<>
    [header]
    [table]
-   #_[modal]
+   [modal]
    [pagination]])

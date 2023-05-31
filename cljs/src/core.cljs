@@ -3,6 +3,7 @@
             [re-frame.core :as rf]
             [views]))
 
+
 (defn render []
   (reagent.dom/render [views/app] (js/document.getElementById "app")))
 
@@ -11,5 +12,6 @@
   (render))
 
 (defn -main []
-  ; (rf/dispatch-sync [:initialize])
+  (enable-console-print!)
+  (rf/dispatch-sync [:init-db])
   (render))
