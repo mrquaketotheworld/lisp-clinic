@@ -67,7 +67,7 @@
                               "AGE(patient.birth) BETWEEN CAST(? || ' years' AS interval)
                                AND CAST(? || ' years' AS interval) AND
                                (patient.first_name ~* ? OR patient.last_name ~* ?
-                               OR patient.mid ~* ?) LIMIT ? OFFSET ?")]
+                               OR patient.mid ~* ?) ORDER BY patient.first_name LIMIT ? OFFSET ?")]
                                   params-city-gender-optional)
                                 {:builder-fn rs/as-unqualified-lower-maps})]
     (patient-format/format-patients patients)))

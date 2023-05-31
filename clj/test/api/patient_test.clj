@@ -298,17 +298,22 @@
 
     (testing "Search 1, all params"
       (let [patients-found (mock-request-patient-search
-                            (str "first-name=JacKIe&last-name=Chan&gender=Male&"
-                                 "city=New%20york&age-bottom=92&age-top=93"
-                                 "&mid=111111111111&offset=0"))]
+                            (str "search=JacKIe%20Chan&gender=Male&"
+                                 "city=New%20york&age-bottom=92&age-top=93&limit=1&offset=0"))]
         (found-patients-equals? patients-found jackie-chan-new-york)))
+
+    (testing "Search first_name Rose and last_name Clause"
+      (let [patients-found (mock-request-patient-search "search=rose%20cla%2022")]
+        (patient-equals? (first patients-found) rose-chan-new-york)
+        (patient-equals? (second patients-found) santa-claus-miami)
+        (patients-count-equals? patients-found 2)))
 
     (testing "Search all from one city"
       (let [patients-found (mock-request-patient-search "city=New%20york")]
         (patients-count-equals? patients-found 2)))
 
     (testing "Search last-name"
-      (let [patients-found (mock-request-patient-search "last-name=Chan")]
+      (let [patients-found (mock-request-patient-search "search=Chan")]
         (patients-count-equals? patients-found 3)))
 
     (testing "Search no params"
@@ -316,27 +321,23 @@
         (patients-count-equals? patients-found 4)))
 
     (testing "Search mid"
-      (let [patients-found (mock-request-patient-search (str "mid=" (:mid santa-claus-miami)))]
+      (let [patients-found (mock-request-patient-search (str "search=" (:mid santa-claus-miami)))]
         (found-patients-equals? patients-found santa-claus-miami)))
 
     (testing "Search unknown mid"
-      (let [patients-found (mock-request-patient-search "mid=34jaf349jasl")]
+      (let [patients-found (mock-request-patient-search "search=34jaf349jasl")]
         (is (empty? patients-found))))
 
     (testing "Search half mid"
-      (let [patients-found (mock-request-patient-search "mid=333")]
+      (let [patients-found (mock-request-patient-search "search=333")]
         (patients-count-equals? patients-found 2)))
 
     (testing "Search half first-name, half last-name with spaces around"
-      (let [patients-found (mock-request-patient-search "first-name=%20San&last-name=%20%20us%20")]
+      (let [patients-found (mock-request-patient-search "search=%20San&%20%20us%20")]
         (found-patients-equals? patients-found santa-claus-miami)))
 
-    (testing "Search not valid mid"
-      (let [patients-found (mock-request-patient-search "mid=333fsdfsdfsdfsfsd")]
-        (is-validation-error? patients-found)))
-
-    (testing "Search not valid first-name"
-      (let [patients-found (mock-request-patient-search (str "first-name=mmidx333fsdfsdfsdfsfs"
+    (testing "Search not valid search"
+      (let [patients-found (mock-request-patient-search (str "search=mmidx333fsdfsdfsdfsfs"
                                                              "dmidx333fsdfsdfsfsdmidx333fsdfsdf"
                                                              "sdfsfsdidx333fsdfsdfsdfsfsdmidx33"
                                                              "3fsdfsdfsdfsfsdmidx333fsdfsdfsdfs"
@@ -345,4 +346,4 @@
 
     (testing "Search with offset 3"
       (let [patients-found (mock-request-patient-search "offset=3")]
-        (found-patients-equals? patients-found jackie-chan-boston)))))
+        (found-patients-equals? patients-found santa-claus-miami)))))
