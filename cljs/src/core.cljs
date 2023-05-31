@@ -1,11 +1,13 @@
 (ns core
   (:require [reagent.dom]
             [re-frame.core :as rf]
-            [views]))
+            [events]
+            [subs]
+            [views.app :refer [app]]))
 
 
 (defn render []
-  (reagent.dom/render [views/app] (js/document.getElementById "app")))
+  (reagent.dom/render [app] (js/document.getElementById "app")))
 
 (defn ^:dev/after-load clear-cache-and-render! []
   (rf/clear-subscription-cache!)
