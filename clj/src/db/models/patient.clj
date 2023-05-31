@@ -1,5 +1,6 @@
 (ns db.models.patient
   (:require [config :refer [db-config]]
+            [clojure.string :as string]
             [next.jdbc :as jdbc]
             [next.jdbc.sql :as sql]
             [next.jdbc.result-set :as rs]
@@ -47,10 +48,12 @@
                                       :address_id (get-address-id connection city street house)}
                  {:mid mid})))
 
-(defn search [{:keys [first-name last-name mid gender city age-bottom age-top limit offset]}]
+(defn search [{:keys [search gender city age-bottom age-top limit offset]}]
   (let [empty-city? (empty? city)
         empty-gender? (empty? gender)
-        params [age-bottom (inc age-top) first-name last-name mid limit offset]
+        splitted-search (string/join "|" (string/split search #" "))
+        params [age-bottom (inc age-top) splitted-search splitted-search splitted-search limit
+                offset]
         params-city-optional (if empty-city? params (cons city params))
         params-city-gender-optional (if empty-gender? params-city-optional
                                         (cons gender params-city-optional))
@@ -63,8 +66,8 @@
                                      (when-not empty-city? "address.city = ? AND ")
                               "AGE(patient.birth) BETWEEN CAST(? || ' years' AS interval)
                                AND CAST(? || ' years' AS interval) AND
-                               (patient.first_name ~* ? AND patient.last_name ~* ?
-                               AND patient.mid ~* ?) LIMIT ? OFFSET ?")]
+                               (patient.first_name ~* ? OR patient.last_name ~* ?
+                               OR patient.mid ~* ?) LIMIT ? OFFSET ?")]
                                   params-city-gender-optional)
                                 {:builder-fn rs/as-unqualified-lower-maps})]
     (patient-format/format-patients patients)))

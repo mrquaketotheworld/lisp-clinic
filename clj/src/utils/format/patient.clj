@@ -13,10 +13,8 @@
 
 (defn format-patient-search-form [patient-form]
   (let [formatted-patient-form (format-patient-form patient-form)]
-    (-> (merge {:first-name ""
-                :last-name ""
-                :gender ""
-                :mid ""
+    (-> (merge {:gender ""
+                :search ""
                 :city ""
                 :age-bottom "0"
                 :age-top "100"
