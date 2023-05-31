@@ -1,5 +1,17 @@
 (ns views) ; TOOD remove redundant CSS
 
+(defn pagination []
+  [:nav.pagination
+   [:a.pagination-previous.is-disabled "Previous"]
+   [:a.pagination-next "Next page"]
+   [:ul.pagination-list
+    [:li
+     [:a.pagination-link.is-current 1]]
+    [:li
+     [:a.pagination-link 2]]
+    [:li
+     [:a.pagination-link 3]]]])
+
 (defn input [label input-name placeholder classes]
   [:div.column
    [:label.label label]
@@ -101,9 +113,11 @@
        [:input.input {:type "search" :name "search"
                       :placeholder (str "John Doe, 381293...")}]
        [:div.icon.is-small.is-left
-        [:i.fa-sharp.fa-solid.fa-magnifying-glass]]]
+        [:i.fa-sharp.fa-solid.fa-keyboard]]]
       [:div.control
-       [:button.button.is-primary "Search"]]]]]])
+       [:button.button.is-primary [:span.icon.is-small
+                                   [:i.fa-solid.fa-magnifying-glass]]
+        [:span "Search"]]]]]]])
 
 (defn table []
   [:div.columns.box.mt-4
@@ -116,7 +130,11 @@
        [:th "Gender"]
        [:th "Birth"]
        [:th "Address"]
-       [:th "MID"]]]
+       [:th "MID"]
+       [:th.has-text-right [:button.button.is-info.is-pull-right
+                            [:span.icon.is-small
+                             [:i.fa-solid.fa-user-plus]]
+                            [:span "Add patient"]]]]]
 
      [:tbody
       [:tr
@@ -125,10 +143,18 @@
        [:td "Male"]
        [:td "05-25-1956"]
        [:td "New York, Green street, 35"]
-       [:td "34324jj32322"]]]]]])
+       [:td "34324jj32322"]
+       [:td.has-text-right
+        [:button.button.is-warning.mr-3
+         [:span.icon.is-small
+          [:i.fa-solid.fa-pen]]]
+        [:button.button.is-danger
+         [:span.icon.is-small
+          [:i.fa-solid.fa-xmark]]]]]]]]])
 
 (defn app []
   [:<>
    [header]
    [table]
-   [modal]])
+   #_[modal]
+   [pagination]])
