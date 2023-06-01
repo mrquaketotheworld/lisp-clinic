@@ -1,26 +1,25 @@
 (ns utils.validation.error
   (:require [clojure.spec.alpha :as spec]))
 
-(def NAME-MAXLENGTH 128)
-(def CITY-MAXLENGTH 128)
-(def STREET-MAXLENGTH 128)
+(def INPUT-MAXLENGTH 128)
 (def MID-LENGTH 12)
-(def SEARCH-MAXLENGTH 128)
-(def HOUSE-MAX 100000)
+
+(defn valid-input? [value]
+  (<= (count (str value)) INPUT-MAXLENGTH))
 
 (defn max-length [max]
   (str "Max length is: " max))
 
 (def errors
-  {:firstname (max-length NAME-MAXLENGTH)
-   :lastname (max-length NAME-MAXLENGTH)
+  {:firstname (max-length INPUT-MAXLENGTH)
+   :lastname (max-length INPUT-MAXLENGTH)
    :gender "Can be Male or Female"
    :birth "Format should be yyyy-mm-dd"
-   :city (max-length CITY-MAXLENGTH)
-   :street (max-length STREET-MAXLENGTH)
+   :city (max-length INPUT-MAXLENGTH)
+   :street (max-length INPUT-MAXLENGTH)
    :house "Should be a number"
    :mid (str "Length should be: " MID-LENGTH)
-   :search (max-length SEARCH-MAXLENGTH)
+   :search (max-length INPUT-MAXLENGTH)
    :patient-doesnt-exist "Patient doesn't exist"
    :patient-exists "Patient already exists"})
 

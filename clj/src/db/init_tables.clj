@@ -40,7 +40,7 @@
                                   id SERIAL PRIMARY KEY,
                                   city VARCHAR(128) NOT NULL,
                                   street VARCHAR(128) NOT NULL,
-                                  house INT NOT NULL,
+                                  house VARCHAR(128) NOT NULL,
                                   created_at timestamptz DEFAULT NOW() NOT NULL,
                                   UNIQUE (city, street, house))"]))
 

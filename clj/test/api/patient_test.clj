@@ -89,14 +89,14 @@
                          :birth "1965-12-25"
                          :city "        New YorK"
                          :street "Big apple       "
-                         :house 20
+                         :house "20A"
                          :mid  "123426782326"}]
       (mock-request-patient-add homer-simpson)
       (let [patient (mock-request-patient-get-by-mid (:mid homer-simpson))]
         (patient-equals? patient homer-simpson))))
 
   (testing "Patient gets existing address"
-    (let [city "New York" street "Yellow" house 22
+    (let [city "New York" street "Yellow" house "22C"
           bart-simpson {:firstname "Bart"
                         :lastname "Simpson"
                         :gender "male"
@@ -117,14 +117,14 @@
       (let [patient (mock-request-patient-get-by-mid (:mid bart-simpson))]
         (patient-equals? patient bart-simpson))))
 
-  (testing "Patient already exists"
+  (testing "Patient with the same mid already exists"
     (let [patient {:firstname "Anonymous"
                    :lastname "Simpson"
                    :gender "male"
                    :birth "1999-11-20"
                    :city "New york"
                    :street "big apple"
-                   :house 20
+                   :house "20"
                    :mid "153426782327"}]
       (mock-request-patient-add patient)
       (let [body (mock-request-patient-add patient)]
@@ -137,7 +137,7 @@
                                           :birth "1994-10-30"
                                           :city "New york"
                                           :street "big apple"
-                                          :house 20
+                                          :house "20"
                                           :mid "123426782328"})]
       (is (:success body))))
 
@@ -147,7 +147,7 @@
                                           :birth "1994-10-30"
                                           :city "New york"
                                           :street "big apple"
-                                          :house 20
+                                          :house "20B"
                                           :mid "123426782328"})]
       (is (= {:error {:keys-missing-or-not-valid ["firstname" "lastname" "birth" "city" "street"
                                                    "house" "mid"]}} body)))))
@@ -163,7 +163,7 @@
                                  :birth "1970-07-19"
                                  :city "New york"
                                  :street "big apple"
-                                 :house 20
+                                 :house "20"
                                  :mid mid})
       (let [body (mock-request-delete mid)
             patient (mock-request-patient-get-by-mid mid)]
@@ -181,14 +181,14 @@
                                         :city "Detroit"
                                         :street "Snow"
                                         :birth "1970-07-19"
-                                        :house 25}]
+                                        :house "25"}]
       (mock-request-patient-add {:firstname "Marshall"
                                  :lastname "Mather"
                                  :gender "Male"
                                  :birth "1970-07-19"
                                  :city "Compton"
                                  :street "Smith"
-                                 :house 24
+                                 :house "24"
                                  :mid (:mid slim-shady-edit-patient-form)})
       (mock-request-patient-edit slim-shady-edit-patient-form)
       (let [patient (mock-request-patient-get-by-mid (:mid slim-shady-edit-patient-form))]
@@ -201,7 +201,7 @@
                                            :birth "1981-08-16"
                                            :city "Tokio"
                                            :street "Alex Yao"
-                                           :house 2
+                                           :house "2"
                                            :mid "423838383838"})]
       (patient-doesnt-exist? body))))
 
@@ -216,7 +216,7 @@
                        :city "Boston"
                        :street "Flinstone"
                        :birth "1973-08-21"
-                       :house 273}]
+                       :house "273"}]
       (mock-request-patient-add michael-moe)
       (let [patient (mock-request-patient-get-by-mid (:mid michael-moe))]
         (patient-equals? patient michael-moe))))
@@ -233,7 +233,7 @@
                               :birth "1930-02-13"
                               :city "        New York"
                               :street "Big apple"
-                              :house 20
+                              :house "20"
                               :mid "111111111111"}
         rose-chan-new-york {:firstname "Rose"
                             :lastname "Chan"
@@ -241,7 +241,7 @@
                             :birth "1932-10-02"
                             :city "        New York"
                             :street "Big apple"
-                            :house 20
+                            :house "20"
                             :mid "111111111112"}
         santa-claus-miami {:firstname "Santa"
                            :lastname "Claus"
@@ -249,7 +249,7 @@
                            :birth "1939-01-03"
                            :city "Miami"
                            :street "Beach"
-                           :house 215
+                           :house "215"
                            :mid "333111111113"}
         jackie-chan-boston {:firstname "Jackie"
                             :lastname "Chan"
@@ -257,7 +257,7 @@
                             :birth "1930-02-13"
                             :city "Boston"
                             :street "Flow"
-                            :house 26
+                            :house "26"
                             :mid "333111111114"}]
     (mock-request-patient-add jackie-chan-new-york)
     (mock-request-patient-add rose-chan-new-york)
