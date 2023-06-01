@@ -5,7 +5,7 @@
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.params :refer [wrap-params]]
-            [ring.util.response :refer [file-response]]
+            [ring.util.response :refer [file-response redirect]]
             [ring.middleware.file :refer [wrap-file]]
             [reitit.ring.middleware.exception :as exception]
             [db.init-tables :as init-tables]
@@ -17,7 +17,8 @@
 (def app
   (ring/ring-handler
    (ring/router
-    [["/api"
+    [["/" {:get (fn [_] (file-response "public/index.html"))}]
+     ["/api"
       ["/patient"
        ["/add" {:post patient/add}]
        ["/delete/:mid" {:delete patient/delete}]
@@ -26,7 +27,7 @@
        ["/search" {:get patient/search}]]]]
     {:data {:middleware [exception/exception-middleware]}})
    (ring/create-default-handler
-    {:not-found (fn [_] (file-response "public/index.html"))})))
+    {:not-found (fn [_] (redirect "/"))})))
 
 (def wrapped-app (->
                   #'app
