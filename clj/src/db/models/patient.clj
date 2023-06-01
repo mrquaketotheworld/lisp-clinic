@@ -6,8 +6,8 @@
             [next.jdbc.result-set :as rs]
             [next.jdbc.date-time :as date-time]
             [db.models.address :as address]
-            [utils.format.patient :as patient-format])
-  (:import [java.time LocalDate]))
+            [utils.format.patient :as patient-format]
+            [utils.format.time :as time]))
 
 (date-time/read-as-local)
 
@@ -25,26 +25,25 @@
     address-id
     (address/add connection city street house)))
 
-(defn add [{:keys [first-name last-name gender birth-day birth-month birth-year city street house
-                   mid]}]
+(defn add [{:keys [first-name last-name gender birth city street house mid]}]
   (jdbc/with-transaction [connection db-config]
     (sql/insert! connection :patient {:first_name first-name
                                       :last_name last-name
                                       :gender gender
-                                      :birth (LocalDate/of birth-year birth-month birth-day)
+                                      :birth (time/parse-date birth)
                                       :address_id (get-address-id connection city street house)
                                       :mid mid})))
 
 (defn delete [mid]
   (sql/delete! db-config :patient {:mid mid}))
 
-(defn edit [{:keys [first-name last-name gender birth-day birth-month birth-year city street house
+(defn edit [{:keys [first-name last-name gender birth city street house
                     mid]}]
   (jdbc/with-transaction [connection db-config]
     (sql/update! connection :patient {:first_name first-name
                                       :last_name last-name
                                       :gender gender
-                                      :birth (LocalDate/of birth-year birth-month birth-day)
+                                      :birth (time/parse-date birth)
                                       :address_id (get-address-id connection city street house)}
                  {:mid mid})))
 

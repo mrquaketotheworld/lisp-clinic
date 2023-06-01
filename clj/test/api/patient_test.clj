@@ -89,9 +89,7 @@
     (let [homer-simpson {:first-name "Homer"
                          :last-name "Simpson"
                          :gender "      male    "
-                         :birth-day 25
-                         :birth-month 12
-                         :birth-year 1965
+                         :birth "1965-12-25"
                          :city "        New YorK"
                          :street "Big apple       "
                          :house 20
@@ -105,9 +103,7 @@
           bart-simpson {:first-name "Bart"
                         :last-name "Simpson"
                         :gender "male"
-                        :birth-day 20
-                        :birth-month 11
-                        :birth-year 1989
+                        :birth "1989-11-20"
                         :city city
                         :street street
                         :house house
@@ -115,9 +111,7 @@
       (mock-request-patient-add {:first-name "Santa"
                                  :last-name "Helper"
                                  :gender "male"
-                                 :birth-day 2
-                                 :birth-month 1
-                                 :birth-year 1999
+                                 :birth "1999-01-02"
                                  :city city
                                  :street street
                                  :house house
@@ -130,9 +124,7 @@
     (let [patient {:first-name "Anonymous"
                    :last-name "Simpson"
                    :gender "male"
-                   :birth-day 20
-                   :birth-month 11
-                   :birth-year 1989
+                   :birth "1999-11-20"
                    :city "New york"
                    :street "big apple"
                    :house 20
@@ -145,9 +137,7 @@
     (let [body (mock-request-patient-add {:first-name "Liza"
                                           :last-name "Simpson"
                                           :gender "Female"
-                                          :birth-day 30
-                                          :birth-month 10
-                                          :birth-year 1994
+                                          :birth "1994-10-30"
                                           :city "New york"
                                           :street "big apple"
                                           :house 20
@@ -157,9 +147,7 @@
   (testing "Validation, patient without field"
     (let [body (mock-request-patient-add {:first-name "Liza"
                                           :last-name "Simpson"
-                                          :birth-day 30
-                                          :birth-month 10
-                                          :birth-year 1994
+                                          :birth "1994-10-30"
                                           :city "New york"
                                           :street "big apple"
                                           :house 20
@@ -174,9 +162,7 @@
       (mock-request-patient-add {:first-name "Marge"
                                  :last-name "Simpson"
                                  :gender "Female"
-                                 :birth-day 19
-                                 :birth-month 7
-                                 :birth-year 1970
+                                 :birth "1970-07-19"
                                  :city "New york"
                                  :street "big apple"
                                  :house 20
@@ -196,16 +182,12 @@
                                         :gender "Male"
                                         :city "Detroit"
                                         :street "Snow"
-                                        :birth-day 19
-                                        :birth-month 7
-                                        :birth-year 1970
+                                        :birth "1970-07-19"
                                         :house 25}]
       (mock-request-patient-add {:first-name "Marshall"
                                  :last-name "Mather"
                                  :gender "Male"
-                                 :birth-day 19
-                                 :birth-month 7
-                                 :birth-year 1970
+                                 :birth "1970-07-19"
                                  :city "Compton"
                                  :street "Smith"
                                  :house 24
@@ -218,9 +200,7 @@
     (let [body (mock-request-patient-edit {:first-name "John"
                                            :last-name "Chan"
                                            :gender "Male"
-                                           :birth-day 16
-                                           :birth-month 8
-                                           :birth-year 1981
+                                           :birth "1981-08-16"
                                            :city "Tokio"
                                            :street "Alex Yao"
                                            :house 2
@@ -237,9 +217,7 @@
                        :gender "Male"
                        :city "Boston"
                        :street "Flinstone"
-                       :birth-day 21
-                       :birth-month 8
-                       :birth-year 1973
+                       :birth "1973-08-21"
                        :house 273}]
       (mock-request-patient-add michael-moe)
       (let [patient (mock-request-patient-get-by-mid (:mid michael-moe))]
@@ -254,9 +232,7 @@
   (let [jackie-chan-new-york {:first-name "Jackie"
                               :last-name "Chan"
                               :gender "male"
-                              :birth-day 13
-                              :birth-month 2
-                              :birth-year 1930
+                              :birth "1930-02-13"
                               :city "        New York"
                               :street "Big apple"
                               :house 20
@@ -264,9 +240,7 @@
         rose-chan-new-york {:first-name "Rose"
                             :last-name "Chan"
                             :gender "Female"
-                            :birth-day 2
-                            :birth-month 10
-                            :birth-year 1932
+                            :birth "1932-10-02"
                             :city "        New York"
                             :street "Big apple"
                             :house 20
@@ -274,9 +248,7 @@
         santa-claus-miami {:first-name "Santa"
                            :last-name "Claus"
                            :gender "Male"
-                           :birth-day 3
-                           :birth-month 1
-                           :birth-year 1939
+                           :birth "1939-01-03"
                            :city "Miami"
                            :street "Beach"
                            :house 215
@@ -284,9 +256,7 @@
         jackie-chan-boston {:first-name "Jackie"
                             :last-name "Chan"
                             :gender "Male"
-                            :birth-day 13
-                            :birth-month 2
-                            :birth-year 1930
+                            :birth "1930-02-13"
                             :city "Boston"
                             :street "Flow"
                             :house 26
