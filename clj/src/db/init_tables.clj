@@ -14,8 +14,8 @@
 (defn create-table-patient []
   (jdbc/execute-one! db-config ["CREATE TABLE IF NOT EXISTS patient (
                                   mid VARCHAR(12) PRIMARY KEY,
-                                  first_name VARCHAR(128) NOT NULL,
-                                  last_name VARCHAR(128) NOT NULL,
+                                  firstname VARCHAR(128) NOT NULL,
+                                  lastname VARCHAR(128) NOT NULL,
                                   gender VARCHAR(16) NOT NULL REFERENCES gender(gender),
                                   birth DATE NOT NULL,
                                   address_id INT NOT NULL REFERENCES address(id),

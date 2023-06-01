@@ -37,6 +37,6 @@
 
 (defn -main [& args]
   (config/set-config! (file/load-edn "config.edn"))
-  (if (= (first args) "init-tables")
-    (init-tables/-main)
-    (run-jetty wrapped-app {:port 3000 :join? false})))
+  (when (= (first args) "init-tables")
+    (init-tables/-main))
+  (run-jetty wrapped-app {:port 3000 :join? false}))

@@ -12,7 +12,7 @@
 (date-time/read-as-local)
 
 (defn get-by-mid [mid]
-  (when-let [patient (jdbc/execute-one! db-config ["SELECT first_name, last_name, gender,
+  (when-let [patient (jdbc/execute-one! db-config ["SELECT firstname, lastname, gender,
                                                      birth, city, street, house, mid
                                                      FROM patient
                                                      JOIN address ON patient.address_id =
@@ -25,10 +25,10 @@
     address-id
     (address/add connection city street house)))
 
-(defn add [{:keys [first-name last-name gender birth city street house mid]}]
+(defn add [{:keys [firstname lastname gender birth city street house mid]}]
   (jdbc/with-transaction [connection db-config]
-    (sql/insert! connection :patient {:first_name first-name
-                                      :last_name last-name
+    (sql/insert! connection :patient {:firstname firstname
+                                      :lastname lastname
                                       :gender gender
                                       :birth (time/parse-date birth)
                                       :address_id (get-address-id connection city street house)
@@ -37,11 +37,11 @@
 (defn delete [mid]
   (sql/delete! db-config :patient {:mid mid}))
 
-(defn edit [{:keys [first-name last-name gender birth city street house
+(defn edit [{:keys [firstname lastname gender birth city street house
                     mid]}]
   (jdbc/with-transaction [connection db-config]
-    (sql/update! connection :patient {:first_name first-name
-                                      :last_name last-name
+    (sql/update! connection :patient {:firstname firstname
+                                      :lastname lastname
                                       :gender gender
                                       :birth (time/parse-date birth)
                                       :address_id (get-address-id connection city street house)}
@@ -58,15 +58,15 @@
                                         (cons gender params-city-optional))
         patients (jdbc/execute! db-config
                           (concat [(str
-                         "SELECT first_name, last_name, gender, birth, city, street, house, mid
+                         "SELECT firstname, lastname, gender, birth, city, street, house, mid
                              FROM patient
                            JOIN address ON patient.address_id = address.id
                              WHERE " (when-not empty-gender? "patient.gender = ? AND ")
                                      (when-not empty-city? "address.city = ? AND ")
                               "AGE(patient.birth) BETWEEN CAST(? || ' years' AS interval)
                                AND CAST(? || ' years' AS interval) AND
-                               (patient.first_name ~* ? OR patient.last_name ~* ?
-                               OR patient.mid ~* ?) ORDER BY patient.first_name LIMIT ? OFFSET ?")]
+                               (patient.firstname ~* ? OR patient.lastname ~* ?
+                               OR patient.mid ~* ?) ORDER BY patient.firstname LIMIT ? OFFSET ?")]
                                   params-city-gender-optional)
                                 {:builder-fn rs/as-unqualified-lower-maps})]
     (patient-format/format-patients patients)))

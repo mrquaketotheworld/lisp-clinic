@@ -54,7 +54,7 @@
   (is (= (count patients) value)))
 
 (defn patient-equals? [patient-found patient]
-  (is (= patient-found (patient-format/format-patient-to-db-fields patient))))
+  (is (= patient-found (patient-format/format-patient-form patient))))
 
 (defn found-patients-equals? [patients-found patient]
   (patient-equals? (first patients-found) patient)
@@ -86,8 +86,8 @@
   (println 'RUN-PATIENT-ADD)
 
   (testing "Patient was saved formatted"
-    (let [homer-simpson {:first-name "Homer"
-                         :last-name "Simpson"
+    (let [homer-simpson {:firstname "Homer"
+                         :lastname "Simpson"
                          :gender "      male    "
                          :birth "1965-12-25"
                          :city "        New YorK"
@@ -100,16 +100,16 @@
 
   (testing "Patient gets existing address"
     (let [city "New York" street "Yellow" house 22
-          bart-simpson {:first-name "Bart"
-                        :last-name "Simpson"
+          bart-simpson {:firstname "Bart"
+                        :lastname "Simpson"
                         :gender "male"
                         :birth "1989-11-20"
                         :city city
                         :street street
                         :house house
                         :mid "123426782327"}]
-      (mock-request-patient-add {:first-name "Santa"
-                                 :last-name "Helper"
+      (mock-request-patient-add {:firstname "Santa"
+                                 :lastname "Helper"
                                  :gender "male"
                                  :birth "1999-01-02"
                                  :city city
@@ -121,8 +121,8 @@
         (patient-equals? patient bart-simpson))))
 
   (testing "Patient already exists"
-    (let [patient {:first-name "Anonymous"
-                   :last-name "Simpson"
+    (let [patient {:firstname "Anonymous"
+                   :lastname "Simpson"
                    :gender "male"
                    :birth "1999-11-20"
                    :city "New york"
@@ -134,8 +134,8 @@
         (equals-error? PATIENT-EXISTS body))))
 
   (testing "Patient was saved"
-    (let [body (mock-request-patient-add {:first-name "Liza"
-                                          :last-name "Simpson"
+    (let [body (mock-request-patient-add {:firstname "Liza"
+                                          :lastname "Simpson"
                                           :gender "Female"
                                           :birth "1994-10-30"
                                           :city "New york"
@@ -145,8 +145,8 @@
       (is (:success body))))
 
   (testing "Validation, patient without field"
-    (let [body (mock-request-patient-add {:first-name "Liza"
-                                          :last-name "Simpson"
+    (let [body (mock-request-patient-add {:firstname "Liza"
+                                          :lastname "Simpson"
                                           :birth "1994-10-30"
                                           :city "New york"
                                           :street "big apple"
@@ -159,8 +159,8 @@
 
   (testing "Patient was deleted"
     (let [mid "123426782329"]
-      (mock-request-patient-add {:first-name "Marge"
-                                 :last-name "Simpson"
+      (mock-request-patient-add {:firstname "Marge"
+                                 :lastname "Simpson"
                                  :gender "Female"
                                  :birth "1970-07-19"
                                  :city "New york"
@@ -177,15 +177,15 @@
 
   (testing "Patient was edited"
     (let [slim-shady-edit-patient-form {:mid "243283439393"
-                                        :first-name "Slim"
-                                        :last-name "Shady"
+                                        :firstname "Slim"
+                                        :lastname "Shady"
                                         :gender "Male"
                                         :city "Detroit"
                                         :street "Snow"
                                         :birth "1970-07-19"
                                         :house 25}]
-      (mock-request-patient-add {:first-name "Marshall"
-                                 :last-name "Mather"
+      (mock-request-patient-add {:firstname "Marshall"
+                                 :lastname "Mather"
                                  :gender "Male"
                                  :birth "1970-07-19"
                                  :city "Compton"
@@ -197,8 +197,8 @@
         (patient-equals? patient slim-shady-edit-patient-form))))
 
   (testing "Patient doesn't exist"
-    (let [body (mock-request-patient-edit {:first-name "John"
-                                           :last-name "Chan"
+    (let [body (mock-request-patient-edit {:firstname "John"
+                                           :lastname "Chan"
                                            :gender "Male"
                                            :birth "1981-08-16"
                                            :city "Tokio"
@@ -212,8 +212,8 @@
 
   (testing "Get patient by mid"
     (let [michael-moe {:mid "34239202023f"
-                       :first-name "Michael"
-                       :last-name "Moe"
+                       :firstname "Michael"
+                       :lastname "Moe"
                        :gender "Male"
                        :city "Boston"
                        :street "Flinstone"
@@ -229,32 +229,32 @@
 
 (deftest patient-search
   (println 'RUN-PATIENT-SEARCH)
-  (let [jackie-chan-new-york {:first-name "Jackie"
-                              :last-name "Chan"
+  (let [jackie-chan-new-york {:firstname "Jackie"
+                              :lastname "Chan"
                               :gender "male"
                               :birth "1930-02-13"
                               :city "        New York"
                               :street "Big apple"
                               :house 20
                               :mid "111111111111"}
-        rose-chan-new-york {:first-name "Rose"
-                            :last-name "Chan"
+        rose-chan-new-york {:firstname "Rose"
+                            :lastname "Chan"
                             :gender "Female"
                             :birth "1932-10-02"
                             :city "        New York"
                             :street "Big apple"
                             :house 20
                             :mid "111111111112"}
-        santa-claus-miami {:first-name "Santa"
-                           :last-name "Claus"
+        santa-claus-miami {:firstname "Santa"
+                           :lastname "Claus"
                            :gender "Male"
                            :birth "1939-01-03"
                            :city "Miami"
                            :street "Beach"
                            :house 215
                            :mid "333111111113"}
-        jackie-chan-boston {:first-name "Jackie"
-                            :last-name "Chan"
+        jackie-chan-boston {:firstname "Jackie"
+                            :lastname "Chan"
                             :gender "Male"
                             :birth "1930-02-13"
                             :city "Boston"
@@ -272,7 +272,7 @@
                                  "city=New%20york&age-bottom=92&age-top=93&limit=1&offset=0"))]
         (found-patients-equals? patients-found jackie-chan-new-york)))
 
-    (testing "Search first_name Rose and last_name Clause"
+    (testing "Search firstname Rose and lastname Clause"
       (let [patients-found (mock-request-patient-search "search=rose%20cla%2022")]
         (patient-equals? (first patients-found) rose-chan-new-york)
         (patient-equals? (second patients-found) santa-claus-miami)

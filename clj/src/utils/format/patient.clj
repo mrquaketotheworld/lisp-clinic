@@ -29,10 +29,3 @@
 
 (defn format-patients [patients]
   (map #(format-date %) patients))
-
-(defn format-patient-to-db-fields [patient]
-  (let [format-patient-form (format-patient-form patient)]
-    (-> format-patient-form
-        (merge {:first_name (:first-name format-patient-form)
-                :last_name (:last-name format-patient-form)})
-        (dissoc :first-name :last-name))))

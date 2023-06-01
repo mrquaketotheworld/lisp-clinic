@@ -4,7 +4,7 @@
 
 (spec/def ::modal-active? boolean?)
 (spec/def ::loading? boolean?)
-(spec/def ::patients vector?)
+(spec/def ::patients seqable?)
 (spec/def ::patients-fetch-error string?)
 (spec/def ::db (spec/keys :opt-un [::modal-active? ::loading? ::patients ::patients-fetch-error]))
 
