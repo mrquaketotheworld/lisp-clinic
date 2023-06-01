@@ -152,7 +152,8 @@
                                           :street "big apple"
                                           :house 20
                                           :mid "123426782328"})]
-      (is-validation-error? body))))
+      (is (= {:error {:some-of-keys-are-not-valid ["firstname" "lastname" "birth" "city" "street"
+                                                   "house" "mid"]}} body)))))
 
 (deftest patient-delete
   (println 'RUN-PATIENT-DELETE)

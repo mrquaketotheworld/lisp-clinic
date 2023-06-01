@@ -10,10 +10,10 @@
 (defn add-edit [request callback]
   (let [patient-form (:body request)
         formatted-patient-form (format-patient/format-patient-form patient-form)]
-    (if (validation-patient-new-form/is-patient-form-valid? formatted-patient-form)
+    (if-let [validation-error (validation-patient-new-form/validate formatted-patient-form)]
+      (message/error validation-error)
       (let [patient-row (patient/get-by-mid (:mid formatted-patient-form))]
-        (callback patient-row formatted-patient-form))
-      (message/error VALIDATION-ERROR))))
+        (callback patient-row formatted-patient-form)))))
 
 (defn add [request]
   (add-edit request (fn [patient-row formatted-patient-form]

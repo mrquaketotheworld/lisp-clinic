@@ -2,4 +2,6 @@
   (:import [java.time LocalDate]))
 
 (defn parse-date [date]
-  (LocalDate/parse date))
+  (try
+    (LocalDate/parse date)
+    (catch Exception e)))
