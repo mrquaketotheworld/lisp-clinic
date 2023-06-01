@@ -1,9 +1,6 @@
 (ns utils.format.message)
 
 (def APPLICATION-JSON {"Content-Type" "application/json"})
-(def PATIENT-DOESNT-EXIST "Patient doesn't exist")
-(def VALIDATION-ERROR "Validation error")
-(def PATIENT-EXISTS "Patient already exists")
 
 (defn error [value]
   {:status 400

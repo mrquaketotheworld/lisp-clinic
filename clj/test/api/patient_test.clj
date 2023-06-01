@@ -6,7 +6,7 @@
             [core]
             [config :as config-src-dir]
             [db.init-tables :as init-tables]
-            [utils.format.message :refer [PATIENT-DOESNT-EXIST VALIDATION-ERROR PATIENT-EXISTS]]
+            [utils.validation.error :as error]
             [utils.format.patient :as patient-format]))
 
 (def db-test {:dbtype "postgresql"
@@ -63,11 +63,8 @@
 (defn equals-error? [message error]
   (is (= message (:error error))))
 
-(defn is-validation-error? [error]
-  (equals-error? VALIDATION-ERROR error))
-
 (defn patient-doesnt-exist? [patient]
-  (equals-error? PATIENT-DOESNT-EXIST patient))
+  (equals-error? (:patient-doesnt-exist error/errors) patient))
 
 (defn db-fixture [test-run]
   (config-src-dir/set-config! db-test) ; make global TEST configuration
@@ -131,7 +128,7 @@
                    :mid "153426782327"}]
       (mock-request-patient-add patient)
       (let [body (mock-request-patient-add patient)]
-        (equals-error? PATIENT-EXISTS body))))
+        (equals-error? (:patient-exists error/errors) body))))
 
   (testing "Patient was saved"
     (let [body (mock-request-patient-add {:firstname "Liza"
@@ -152,7 +149,7 @@
                                           :street "big apple"
                                           :house 20
                                           :mid "123426782328"})]
-      (is (= {:error {:some-of-keys-are-not-valid ["firstname" "lastname" "birth" "city" "street"
+      (is (= {:error {:keys-missing-or-not-valid ["firstname" "lastname" "birth" "city" "street"
                                                    "house" "mid"]}} body)))))
 
 (deftest patient-delete
@@ -313,7 +310,7 @@
                                                              "sdfsfsdidx333fsdfsdfsdfsfsdmidx33"
                                                              "3fsdfsdfsdfsfsdmidx333fsdfsdfsdfs"
                                                              "fsdmidx333fsdfsdfsdfsfsd"))]
-        (is-validation-error? patients-found)))
+        (is (= {:error {:search "Max length is: 128"}} patients-found))))
 
     (testing "Search with offset 3"
       (let [patients-found (mock-request-patient-search "offset=3")]

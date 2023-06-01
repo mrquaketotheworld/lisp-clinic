@@ -4,8 +4,8 @@
    [utils.validation.patient.new-form :as validation-patient-new-form]
    [utils.validation.patient.search-form :as validation-patient-search-form]
    [utils.format.patient :as format-patient]
-   [utils.format.message :as message :refer [PATIENT-EXISTS PATIENT-DOESNT-EXIST
-                                             VALIDATION-ERROR]]))
+   [utils.format.message :as message]
+   [utils.validation.error :as error]))
 
 (defn add-edit [request callback]
   (let [patient-form (:body request)
@@ -18,7 +18,7 @@
 (defn add [request]
   (add-edit request (fn [patient-row formatted-patient-form]
                       (if patient-row
-                        (message/error PATIENT-EXISTS)
+                        (message/error (:patient-exists error/errors))
                         (do (patient/add formatted-patient-form) (message/success))))))
 
 (defn delete [request]
@@ -29,15 +29,15 @@
   (add-edit request (fn [patient-row formatted-patient-form]
                       (if patient-row
                         (do (patient/edit formatted-patient-form) (message/success))
-                        (message/error PATIENT-DOESNT-EXIST)))))
+                        (message/error (:patient-doesnt-exist error/errors))))))
 
 (defn get-by-mid [request]
   (if-let [patient (patient/get-by-mid (:mid (:path-params request)))]
     (message/success patient)
-    (message/error PATIENT-DOESNT-EXIST)))
+    (message/error (:patient-doesnt-exist error/errors))))
 
 (defn search [{patient-form :params}]
   (let [formatted-patient-form (format-patient/format-patient-search-form patient-form)]
-    (if (validation-patient-search-form/is-patient-search-form-valid? formatted-patient-form)
-      (message/success (patient/search formatted-patient-form))
-      (message/error VALIDATION-ERROR))))
+    (if-let [validation-error (validation-patient-search-form/validate formatted-patient-form)]
+      (message/error validation-error)
+      (message/success (patient/search formatted-patient-form)))))
