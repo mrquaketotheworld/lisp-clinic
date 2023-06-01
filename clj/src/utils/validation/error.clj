@@ -6,6 +6,7 @@
 (def STREET-MAXLENGTH 128)
 (def MID-LENGTH 12)
 (def SEARCH-MAXLENGTH 128)
+(def HOUSE-MAX 100000)
 
 (defn max-length [max]
   (str "Max length is: " max))
