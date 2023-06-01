@@ -21,9 +21,14 @@
                  :uri "/api/patient/search"
                  :response-format (ajax/json-response-format {:keywords? true})
                  :on-success [:fetch-patients-success]
-                 :on-failure [:bad-http-result]}}))
+                 :on-failure [:fetch-patients-error]}}))
 
 (rf/reg-event-db
  :fetch-patients-success
  (fn [db [_ patients]]
    (assoc db :patients patients :loading? false)))
+
+(rf/reg-event-db
+ :fetch-patients-error
+ (fn [db]
+   (assoc db :patients-fetch-error "Oops... Try reload the page please" :loading? false)))

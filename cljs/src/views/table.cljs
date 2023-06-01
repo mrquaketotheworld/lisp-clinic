@@ -22,25 +22,28 @@
 
 (defn table []
   (let [loading? @(rf/subscribe [:loading?])
-        patients @(rf/subscribe [:patients])]
-    (if loading?
-      [:progress.progress.is-small.is-primary]
-      [:div.columns.box.mt-4
-       [:div.column
-        [:table.table
-         [:thead
-          [:tr
-           [:th "#"]
-           [:th "Name"]
-           [:th "Gender"]
-           [:th "Birth"]
-           [:th "Address"]
-           [:th "MID"]
-           [:th.has-text-right
-            [:button.button.is-info.is-pull-right {:on-click show-modal}
-             [:span.icon.is-small
-              [:i.fa-solid.fa-user-plus]]
-             [:span "Add patient"]]]]]
-         [:tbody
-          (render-patients-rows patients)]]]])))
+        patients @(rf/subscribe [:patients])
+        error-message @(rf/subscribe [:patients-fetch-error])]
+    (if error-message
+      [:h1 error-message]
+      (if loading?
+        [:progress.progress.is-small.is-primary]
+        [:div.columns.box.mt-4
+         [:div.column
+          [:table.table
+           [:thead
+            [:tr
+             [:th "#"]
+             [:th "Name"]
+             [:th "Gender"]
+             [:th "Birth"]
+             [:th "Address"]
+             [:th "MID"]
+             [:th.has-text-right
+              [:button.button.is-info.is-pull-right {:on-click show-modal}
+               [:span.icon.is-small
+                [:i.fa-solid.fa-user-plus]]
+               [:span "Add patient"]]]]]
+           [:tbody
+            (render-patients-rows patients)]]]]))))
 

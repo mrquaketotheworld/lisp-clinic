@@ -7,3 +7,6 @@
 (defn show-modal []
   (rf/dispatch [:modal-active? true]))
 
+(defn search-patients []
+  (rf/dispatch [:search-patients]))
+

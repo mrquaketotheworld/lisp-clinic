@@ -16,7 +16,7 @@
  (fn [db _]
    (:patients db)))
 
-
-
-
-
+(rf/reg-sub
+ :patients-fetch-error
+ (fn [db _]
+   (:patients-fetch-error db)))

@@ -4,7 +4,8 @@
             [day8.re-frame.http-fx]
             [events]
             [subs]
-            [views.app :refer [app]]))
+            [views.app :refer [app]]
+            [dispatches :refer [search-patients]]))
 
 (defn render []
   (reagent.dom/render [app] (js/document.getElementById "app")))
@@ -16,5 +17,5 @@
 (defn -main []
   (enable-console-print!)
   (rf/dispatch-sync [:init-db])
-  (rf/dispatch [:search-patients])
+  (search-patients)
   (render))
