@@ -3,12 +3,12 @@
             [dispatches :refer [show-modal delete-patient]]))
 
 (defn render-patients-rows [patients]
-  (map-indexed (fn [i {:keys [first_name last_name birth city street house mid]}]
+  (map-indexed (fn [i {:keys [firstname lastname birth city street house mid]}]
                  [:tr
                   {:key i}
                   [:th (inc i)]
-                  [:td first_name]
-                  [:td last_name]
+                  [:td firstname]
+                  [:td lastname]
                   [:td birth]
                   [:td (str city ", " street ", " house)]
                   [:td mid]

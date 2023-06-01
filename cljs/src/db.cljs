@@ -8,7 +8,7 @@
 (spec/def ::birth string?)
 (spec/def ::city string?)
 (spec/def ::street string?)
-(spec/def ::house string?)
+(spec/def ::house int?)
 (spec/def ::mid string?)
 (spec/def ::patient (spec/keys :opt-un [::firstname ::lastname ::gender ::birth ::city ::street
                                         ::house ::mid]))

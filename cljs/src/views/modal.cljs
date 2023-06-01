@@ -32,8 +32,8 @@
      [:button.delete {:on-click hide-modal}]]
     [:section.modal-card-body
      [:div.columns
-      [input "First Name" "first-name" "Homer" "fa-solid fa-address-card"]
-      [input "Last Name" "last-name" "Simpson" "fa-solid fa-address-card"]]
+      [input "First Name" "firstname" "Homer" "fa-solid fa-address-card"]
+      [input "Last Name" "lastname" "Simpson" "fa-solid fa-address-card"]]
      [:div.columns
       [select-gender-simple]
       [:div.column
