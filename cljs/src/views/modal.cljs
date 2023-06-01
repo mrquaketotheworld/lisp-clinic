@@ -23,7 +23,7 @@
      [:i.fa-regular.fa-person-circle-question]]]])
 
 (defn modal []
-  [:div.modal {:class (when @(rf/subscribe [:is-modal-active?]) "is-active")}
+  [:div.modal {:class (when @(rf/subscribe [:modal-active?]) "is-active")}
    [:div.modal-background]
    [:div.modal-card
     [:header.modal-card-head

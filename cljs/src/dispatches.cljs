@@ -2,8 +2,8 @@
   (:require [re-frame.core :as rf]))
 
 (defn hide-modal []
-  (rf/dispatch [:is-modal-active? false]))
+  (rf/dispatch [:modal-active? false]))
 
 (defn show-modal []
-  (rf/dispatch [:is-modal-active? true]))
+  (rf/dispatch [:modal-active? true]))
 
