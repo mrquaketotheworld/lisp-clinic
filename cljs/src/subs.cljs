@@ -3,20 +3,20 @@
 
 (rf/reg-sub
  :modal-active?
- (fn [db _]
+ (fn [db]
    (:modal-active? db)))
 
 (rf/reg-sub
  :loading?
- (fn [db _]
+ (fn [db]
    (:loading? db)))
 
 (rf/reg-sub
  :patients
- (fn [db _]
+ (fn [db]
    (:patients db)))
 
 (rf/reg-sub
  :patients-fetch-error
- (fn [db _]
+ (fn [db]
    (:patients-fetch-error db)))

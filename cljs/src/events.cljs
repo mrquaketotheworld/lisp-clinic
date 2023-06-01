@@ -2,9 +2,11 @@
   (:require [re-frame.core :as rf]
             [ajax.core :as ajax]))
 
+(def DEFAULT-ERROR-MESSAGE "Oops... Sorry, try to reload the page")
+
 (rf/reg-event-db
  :init-db
- (fn [_ _]
+ (fn []
    {:modal-active? false
     :loading? true}))
 
@@ -15,7 +17,7 @@
 
 (rf/reg-event-fx
  :search-patients
- (fn [{:keys [db]} _]
+ (fn [{:keys [db]}]
    {:db (assoc db :loading? true)
     :http-xhrio {:method :get
                  :uri "/api/patient/search"
@@ -31,7 +33,7 @@
 (rf/reg-event-db
  :fetch-patients-error
  (fn [db]
-   (assoc db :patients-fetch-error "Oops... Try reload the page please" :loading? false))) ; TODO error m
+   (assoc db :patients-fetch-error DEFAULT-ERROR-MESSAGE :loading? false)))
 
 (rf/reg-event-fx
  :delete-patient
@@ -52,5 +54,5 @@
 (rf/reg-event-db
  :fetch-delete-patient-error
  (fn [db]
-   (assoc db :patients-fetch-error "Oops... Try reload the page please" :loading? false)))
+   (assoc db :patients-fetch-error DEFAULT-ERROR-MESSAGE :loading? false)))
 
