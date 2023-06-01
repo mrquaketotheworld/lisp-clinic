@@ -1,6 +1,7 @@
 (ns views.modal
   (:require [re-frame.core :as rf]
-            [dispatches :refer [hide-modal]]))
+            [dispatches :refer [hide-modal]]
+            [utils.format.time :as time]))
 
 (defn input [label input-name placeholder classes]
   [:div.column
@@ -37,10 +38,7 @@
       [select-gender-simple]
       [:div.column
        [:label.label "Birth"]
-       [:input.input {:type "date" :min "1900-01-01" :max (-> (js/Date.)
-                                                              .toISOString
-                                                              (.split "T")
-                                                              first)}]]
+       [:input.input {:type "date" :min "1900-01-01" :max (time/current-date)}]]
       [input "Medical Insurance ID" "mid" "342929393329" "fa-solid fa-file-medical"]]
      [:div.columns
       [input "City" "city" "New York" "fa-solid fa-globe"]
