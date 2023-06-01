@@ -1,22 +1,22 @@
 (ns views.table
   (:require [re-frame.core :as rf]
-            [dispatches :refer [show-modal]]))
+            [dispatches :refer [show-modal delete-patient]]))
 
 (defn render-patients-rows [patients]
-  (map-indexed (fn [i patient]
+  (map-indexed (fn [i {:keys [first_name last_name birth city street house mid]}]
                  [:tr
                   {:key i}
-                  [:th i]
-                  [:td (:first_name patient)]
-                  [:td (:last_name patient)]
-                  [:td (:birth patient)]
-                  [:td (str (:city patient) ", " (:street patient) ", " (:house patient))]
-                  [:td (:mid patient)]
+                  [:th (inc i)]
+                  [:td first_name]
+                  [:td last_name]
+                  [:td birth]
+                  [:td (str city ", " street ", " house)]
+                  [:td mid]
                   [:td.has-text-right
                    [:button.button.is-warning.mr-3
                     [:span.icon.is-small
                      [:i.fa-solid.fa-pen]]]
-                   [:button.button.is-danger
+                   [:button.button.is-danger {:on-click #(delete-patient mid)}
                     [:span.icon.is-small
                      [:i.fa-solid.fa-xmark]]]]]) patients))
 

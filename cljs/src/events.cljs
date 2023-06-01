@@ -31,4 +31,26 @@
 (rf/reg-event-db
  :fetch-patients-error
  (fn [db]
+   (assoc db :patients-fetch-error "Oops... Try reload the page please" :loading? false))) ; TODO error m
+
+(rf/reg-event-fx
+ :delete-patient
+ (fn [{:keys [db]} [_ mid]]
+   {:db (assoc db :loading? true)
+    :http-xhrio {:method :delete
+                 :uri (str "/api/patient/delete/" mid)
+                 :body {}
+                 :response-format (ajax/json-response-format {:keywords? true})
+                 :on-success [:fetch-delete-patient-success mid]
+                 :on-failure [:fetch-delete-patient-error]}}))
+
+(rf/reg-event-db
+ :fetch-delete-patient-success
+ (fn [db [_ mid]]
+   (assoc db :patients (filter #(not= (:mid %) mid) (:patients db)) :loading? false)))
+
+(rf/reg-event-db
+ :fetch-delete-patient-error
+ (fn [db]
    (assoc db :patients-fetch-error "Oops... Try reload the page please" :loading? false)))
+

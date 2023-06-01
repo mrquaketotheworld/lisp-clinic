@@ -10,3 +10,6 @@
 (defn search-patients []
   (rf/dispatch [:search-patients]))
 
+(defn delete-patient [mid]
+  (rf/dispatch [:delete-patient mid]))
+
