@@ -95,7 +95,7 @@
                :placeholder "332"
                :classes "fa-solid fa-house"}]]]
      [:footer.modal-card-foot
-      [:button.button.is-success "Saved"]
+      [:button.button.is-success "Save"]
       [:div.button {:on-click hide-modal} "Cancel"]]]]])
 
 

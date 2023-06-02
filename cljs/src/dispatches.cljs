@@ -13,8 +13,8 @@
 (defn delete-patient [mid]
   (rf/dispatch [:delete-patient mid]))
 
-(defn edit-patient [mid]
-  (rf/dispatch [:edit-patient mid]))
+(defn fill-edit-patient [mid]
+  (rf/dispatch [:fill-edit-patient mid]))
 
 (defn on-patient-form-change [field-key value]
   (rf/dispatch [:patient-form-change field-key value]))

@@ -1,10 +1,10 @@
 (ns views.table
   (:require [re-frame.core :as rf]
             [dispatches :refer [show-modal delete-patient remove-ajax-success remove-ajax-error
-                                edit-patient]]))
+                                fill-edit-patient]]))
 
 (defn on-edit-patient [mid]
-  (edit-patient mid)
+  (fill-edit-patient mid)
   (show-modal))
 
 (defn render-patients-rows [patients]
