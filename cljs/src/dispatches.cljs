@@ -13,3 +13,6 @@
 (defn delete-patient [mid]
   (rf/dispatch [:delete-patient mid]))
 
+(defn on-patient-form-change [field-key value]
+  (rf/dispatch [:patient-form-change field-key value]))
+

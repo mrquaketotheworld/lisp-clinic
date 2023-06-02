@@ -15,7 +15,6 @@
   (render))
 
 (defn -main []
-  (enable-console-print!)
   (rf/dispatch-sync [:init-db])
   (search-patients)
   (render))

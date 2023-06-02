@@ -65,3 +65,9 @@
  (fn [db]
    (assoc db :patients-fetch-error DEFAULT-ERROR-MESSAGE :loading? false)))
 
+(rf/reg-event-db
+ :patient-form-change
+ check-spec-interceptor
+ (fn [db [_ field-key value]]
+   (assoc-in db [:patient field-key] value)))
+
