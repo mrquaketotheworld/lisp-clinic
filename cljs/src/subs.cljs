@@ -7,11 +7,6 @@
    (:modal-active? db)))
 
 (rf/reg-sub
- :loading?
- (fn [db]
-   (:loading? db)))
-
-(rf/reg-sub
  :patients
  (fn [db]
    (:patients db)))

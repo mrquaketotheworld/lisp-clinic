@@ -14,11 +14,9 @@
                                         ::house ::mid]))
 
 (spec/def ::modal-active? boolean?)
-(spec/def ::loading? boolean?)
 (spec/def ::patients seqable?)
 (spec/def ::ajax-error string?)
-(spec/def ::db (spec/keys :opt-un [::patient ::modal-active? ::loading? ::patients
-                                   ::ajax-error]))
+(spec/def ::db (spec/keys :opt-un [::patient ::modal-active? ::patients ::ajax-error]))
 
 (defn check-and-throw [a-spec db]
   (when-not (spec/valid? a-spec db)
