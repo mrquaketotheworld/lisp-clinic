@@ -10,7 +10,8 @@
  check-spec-interceptor
  (fn []
    {:modal-active? false
-    :loading? true}))
+    :loading? true
+    :patient {:gender "Male"}}))
 
 (rf/reg-event-db
  :modal-active?
@@ -70,4 +71,11 @@
  check-spec-interceptor
  (fn [db [_ field-key value]]
    (assoc-in db [:patient field-key] value)))
+
+(rf/reg-event-db
+ :trim-form
+ check-spec-interceptor
+ (fn [db]
+   (assoc db :patient (reduce (fn [acc key-value]
+        (assoc acc (first key-value) (.trim (second key-value)))) {} (:patient db)))))
 

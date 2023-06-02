@@ -20,3 +20,8 @@
  :patients-fetch-error
  (fn [db]
    (:patients-fetch-error db)))
+
+(rf/reg-sub
+ :patient
+ (fn [db]
+   (:patient db)))

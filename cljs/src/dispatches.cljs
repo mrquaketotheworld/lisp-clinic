@@ -16,3 +16,6 @@
 (defn on-patient-form-change [field-key value]
   (rf/dispatch [:patient-form-change field-key value]))
 
+(defn trim-form []
+  (rf/dispatch [:trim-form]))
+
