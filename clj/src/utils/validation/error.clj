@@ -7,19 +7,18 @@
 (defn valid-input? [value]
   (<= (count (str value)) INPUT-MAXLENGTH))
 
-(defn max-length [max]
-  (str "Max length is: " max))
+(def max-length (str "Max length is: " INPUT-MAXLENGTH))
 
 (def errors
-  {:firstname (max-length INPUT-MAXLENGTH)
-   :lastname (max-length INPUT-MAXLENGTH)
+  {:firstname max-length
+   :lastname max-length
    :gender "Can be Male or Female"
    :birth "Format should be yyyy-mm-dd"
-   :city (max-length INPUT-MAXLENGTH)
-   :street (max-length INPUT-MAXLENGTH)
+   :city max-length
+   :street max-length
    :house "Should be a number"
    :mid (str "Length should be: " MID-LENGTH)
-   :search (max-length INPUT-MAXLENGTH)
+   :search max-length
    :patient-doesnt-exist "Patient doesn't exist"
    :patient-exists "Patient already exists"})
 
