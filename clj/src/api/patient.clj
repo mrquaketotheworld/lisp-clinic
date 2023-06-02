@@ -19,7 +19,8 @@
   (add-edit request (fn [patient-row formatted-patient-form]
                       (if patient-row
                         (message/error (:patient-exists error/errors))
-                        (do (patient/add formatted-patient-form) (message/success))))))
+                        (do (patient/add formatted-patient-form)
+                            (message/success formatted-patient-form))))))
 
 (defn delete [request]
   (patient/delete (:mid (:path-params request)))
