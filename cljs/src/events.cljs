@@ -35,7 +35,7 @@
                  :uri "/api/patient/search"
                  :response-format (ajax/json-response-format {:keywords? true})
                  :on-success [:on-search-patients-success]
-                 :on-failure [:on-ajax-error]}}))
+                 :on-failure [:ajax-error]}}))
 
 (rf/reg-event-db
  :on-search-patients-success
@@ -44,7 +44,19 @@
    (assoc db :patients patients)))
 
 (rf/reg-event-db
- :on-ajax-error
+ :remove-ajax-success
+ check-spec-interceptor
+ (fn [db]
+   (dissoc db :ajax-success)))
+
+(rf/reg-event-db
+ :remove-ajax-error
+ check-spec-interceptor
+ (fn [db]
+   (dissoc db :ajax-error)))
+
+(rf/reg-event-db
+ :ajax-error
  check-spec-interceptor
  (fn [db [_ message]]
    (assoc db :ajax-error (or message DEFAULT-ERROR-MESSAGE))))
@@ -58,7 +70,7 @@
                  :body {}
                  :response-format (ajax/json-response-format {:keywords? true})
                  :on-success [:on-delete-patient-success mid]
-                 :on-failure [:on-ajax-error]}}))
+                 :on-failure [:ajax-error]}}))
 
 (rf/reg-event-db
  :on-delete-patient-success
@@ -104,7 +116,7 @@
  :on-add-patient-error
  check-spec-interceptor
  (fn [_ [_ response]]
-   {:fx [[:dispatch [:on-ajax-error (:error (:response response))]]]}))
+   {:fx [[:dispatch [:ajax-error (:error (:response response))]]]}))
 
 (rf/reg-event-db
  :clear-patient

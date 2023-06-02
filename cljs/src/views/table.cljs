@@ -1,14 +1,14 @@
 (ns views.table
   (:require [re-frame.core :as rf]
-            [dispatches :refer [show-modal delete-patient]]))
+            [dispatches :refer [show-modal delete-patient remove-ajax-success remove-ajax-error]]))
 
 (defn render-patients-rows [patients]
-  (map-indexed (fn [i {:keys [firstname lastname birth city street house mid]}]
+  (map-indexed (fn [i {:keys [firstname lastname gender birth city street house mid]}]
                  [:tr
                   {:key i}
                   [:th (inc i)]
-                  [:td firstname]
-                  [:td lastname]
+                  [:td (str firstname " " lastname)]
+                  [:td gender]
                   [:td birth]
                   [:td (str city ", " street ", " house)]
                   [:td mid]
@@ -27,10 +27,10 @@
     [:<>
      (when error-message
        [:div.notification.is-danger
-        [:button.delete] error-message])
+        [:button.delete {:on-click remove-ajax-error}] error-message])
      (when success-message
        [:div.notification.is-success
-        [:button.delete] success-message])
+        [:button.delete {:on-click remove-ajax-success}] success-message])
      [:div.columns.box.mt-4
       [:div.column
        [:table.table

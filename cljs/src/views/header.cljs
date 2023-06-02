@@ -17,7 +17,7 @@
     [:i.fa-solid.fa-globe]]])
 
 (defn select-gender []
-  [:div.field
+  [:div.field.mr-4
    [:label.label "Gender"]
    [:div.control.has-icons-left
     [:div.select
@@ -34,21 +34,24 @@
     [:p.level-item
      [:img.logo {:src "images/lispclinic.png"}]]]
    [:div.columns.box
-    [:div.column [select-gender]]
     [:div.column
-     [:div.field [:label.label "Age"] [:div.field.is-grouped
-                                       [select-age "age-bottom" "0"]
-                                       [select-age "age-top" "100"]]]]
-    [:div.column [:div.field [:label.label "City"] [select-city]]]
-    [:div.column.is-two-fifths.is-align-self-flex-end
      [:div.field.is-grouped
-      [:div.control.is-expanded.has-icons-left
-       [:input.input {:type "search" :name "search"
-                      :placeholder (str "John Doe, 381293...")}]
-       [:div.icon.is-small.is-left
-        [:i.fa-sharp.fa-solid.fa-keyboard]]]
-      [:div.control
-       [:button.button.is-primary [:span.icon.is-small
-                                   [:i.fa-solid.fa-magnifying-glass]]
-        [:span "Search"]]]]]]])
+      [select-gender]
+      [:div.field.mr-4 [:label.label "Age"] [:div.field.is-grouped
+                                             [select-age "age-bottom" "0"]
+                                             [select-age "age-top" "100"]]]
+      [:div.field [:label.label "City"] [select-city]]]]
+    [:div.column.is-half
+     [:div.field
+      [:label.label "Search"]
+      [:div.field.is-grouped
+       [:div.control.is-expanded.has-icons-left
+        [:input.input {:type "search" :name "search"
+                       :placeholder (str "John Doe, 381293...")}]
+        [:div.icon.is-small.is-left
+         [:i.fa-sharp.fa-solid.fa-keyboard]]]
+       [:div.control
+        [:button.button.is-primary
+         [:span.icon.is-small [:i.fa-solid.fa-magnifying-glass]]
+         [:span "Go"]]]]]]]])
 

@@ -25,3 +25,11 @@
 (defn clear-patient []
   (rf/dispatch [:clear-patient]))
 
+(defn remove-ajax-success []
+  (rf/dispatch [:remove-ajax-success]))
+
+(defn remove-ajax-error []
+  (rf/dispatch [:remove-ajax-error]))
+
+
+
