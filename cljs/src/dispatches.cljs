@@ -19,3 +19,9 @@
 (defn trim-form []
   (rf/dispatch [:trim-form]))
 
+(defn add-patient []
+  (rf/dispatch [:add-patient]))
+
+(defn clear-patient []
+  (rf/dispatch [:clear-patient]))
+
