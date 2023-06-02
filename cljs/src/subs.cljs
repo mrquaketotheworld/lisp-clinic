@@ -12,6 +12,11 @@
    (:patients db)))
 
 (rf/reg-sub
+ :ajax-success
+ (fn [db]
+   (:ajax-success db)))
+
+(rf/reg-sub
  :ajax-error
  (fn [db]
    (:ajax-error db)))

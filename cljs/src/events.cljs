@@ -76,8 +76,9 @@
  :trim-form
  check-spec-interceptor
  (fn [db]
-   (assoc db :patient (reduce (fn [acc key-value]
-                                (assoc acc (first key-value) (.trim (second key-value)))) {} (:patient db)))))
+   (assoc db :patient
+          (reduce (fn [acc key-value]
+                    (assoc acc (first key-value) (.trim (second key-value)))) {} (:patient db)))))
 
 (rf/reg-event-fx
  :add-patient
@@ -94,15 +95,16 @@
 (rf/reg-event-db
  :on-add-patient-success
  check-spec-interceptor
- (fn [db [_ patient]]
-   (update-in db [:patients] #(into [patient] %))))
+ (fn [db [_ response]]
+   (-> db
+       (update-in [:patients] #(into [(:patient response)] %))
+       (assoc :ajax-success (:message response)))))
 
 (rf/reg-event-fx
  :on-add-patient-error
  check-spec-interceptor
- (fn [{:keys [db]} [_ response]]
-   {:db db
-    :fx [[:dispatch [:on-ajax-error (:error (:response response))]]]}))
+ (fn [_ [_ response]]
+   {:fx [[:dispatch [:on-ajax-error (:error (:response response))]]]}))
 
 (rf/reg-event-db
  :clear-patient

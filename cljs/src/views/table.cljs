@@ -22,11 +22,15 @@
 
 (defn table []
   (let [patients @(rf/subscribe [:patients])
-        error-message @(rf/subscribe [:ajax-error])]
+        error-message @(rf/subscribe [:ajax-error])
+        success-message @(rf/subscribe [:ajax-success])]
     [:<>
      (when error-message
        [:div.notification.is-danger
         [:button.delete] error-message])
+     (when success-message
+       [:div.notification.is-success
+        [:button.delete] success-message])
      [:div.columns.box.mt-4
       [:div.column
        [:table.table
