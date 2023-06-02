@@ -23,7 +23,7 @@
 (defn table []
   (let [loading? @(rf/subscribe [:loading?])
         patients @(rf/subscribe [:patients])
-        error-message @(rf/subscribe [:patients-fetch-error])]
+        error-message @(rf/subscribe [:ajax-error])]
     (if error-message
       [:h1 error-message]
       (if loading?

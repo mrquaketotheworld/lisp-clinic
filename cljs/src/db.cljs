@@ -16,9 +16,9 @@
 (spec/def ::modal-active? boolean?)
 (spec/def ::loading? boolean?)
 (spec/def ::patients seqable?)
-(spec/def ::patients-fetch-error string?)
+(spec/def ::ajax-error string?)
 (spec/def ::db (spec/keys :opt-un [::patient ::modal-active? ::loading? ::patients
-                                   ::patients-fetch-error]))
+                                   ::ajax-error]))
 
 (defn check-and-throw [a-spec db]
   (when-not (spec/valid? a-spec db)

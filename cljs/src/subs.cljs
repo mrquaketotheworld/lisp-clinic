@@ -17,9 +17,9 @@
    (:patients db)))
 
 (rf/reg-sub
- :patients-fetch-error
+ :ajax-error
  (fn [db]
-   (:patients-fetch-error db)))
+   (:ajax-error db)))
 
 (rf/reg-sub
  :patient

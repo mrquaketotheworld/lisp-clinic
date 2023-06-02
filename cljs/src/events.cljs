@@ -3,7 +3,7 @@
             [ajax.core :as ajax]
             [db :refer [check-spec-interceptor]]))
 
-(def DEFAULT-ERROR-MESSAGE "Oops... Sorry, try to reload the page")
+(def DEFAULT-ERROR-MESSAGE "Oops... Sorry, something went wrong, try to reload the page")
 
 (rf/reg-event-db
  :init-db
@@ -27,20 +27,20 @@
     :http-xhrio {:method :get
                  :uri "/api/patient/search"
                  :response-format (ajax/json-response-format {:keywords? true})
-                 :on-success [:fetch-patients-success]
-                 :on-failure [:fetch-patients-error]}}))
+                 :on-success [:on-search-patients-success]
+                 :on-failure [:on-search-patients-error]}}))
 
 (rf/reg-event-db
- :fetch-patients-success
+ :on-search-patients-success
  check-spec-interceptor
  (fn [db [_ patients]]
    (assoc db :patients patients :loading? false)))
 
 (rf/reg-event-db
- :fetch-patients-error
+ :on-search-patients-error
  check-spec-interceptor
  (fn [db]
-   (assoc db :patients-fetch-error DEFAULT-ERROR-MESSAGE :loading? false)))
+   (assoc db :ajax-error DEFAULT-ERROR-MESSAGE :loading? false)))
 
 (rf/reg-event-fx
  :delete-patient
@@ -51,20 +51,20 @@
                  :uri (str "/api/patient/delete/" mid)
                  :body {}
                  :response-format (ajax/json-response-format {:keywords? true})
-                 :on-success [:fetch-delete-patient-success mid]
-                 :on-failure [:fetch-delete-patient-error]}}))
+                 :on-success [:on-delete-patient-success mid]
+                 :on-failure [:on-delete-patient-error]}}))
 
 (rf/reg-event-db
- :fetch-delete-patient-success
+ :on-delete-patient-success
  check-spec-interceptor
  (fn [db [_ mid]]
    (assoc db :patients (filter #(not= (:mid %) mid) (:patients db)) :loading? false)))
 
 (rf/reg-event-db
- :fetch-delete-patient-error
+ :on-delete-patient-error
  check-spec-interceptor
  (fn [db]
-   (assoc db :patients-fetch-error DEFAULT-ERROR-MESSAGE :loading? false)))
+   (assoc db :ajax-error DEFAULT-ERROR-MESSAGE :loading? false)))
 
 (rf/reg-event-db
  :patient-form-change
@@ -78,4 +78,15 @@
  (fn [db]
    (assoc db :patient (reduce (fn [acc key-value]
         (assoc acc (first key-value) (.trim (second key-value)))) {} (:patient db)))))
+
+#_(rf/reg-event-fx
+ :add-patient
+ check-spec-interceptor
+ (fn [{:keys [db]}]
+   {:db (assoc db :loading? true)
+    :http-xhrio {:method :post
+                 :uri "/api/patient/add"
+                 :response-format (ajax/json-response-format {:keywords? true})
+                 :on-success [:add-patient-success]
+                 :on-failure [:add-patient-error]}}))
 
