@@ -58,8 +58,8 @@
 (rf/reg-event-db
  :ajax-error
  check-spec-interceptor
- (fn [db [_ message]]
-   (assoc db :ajax-error (or message DEFAULT-ERROR-MESSAGE))))
+ (fn [db [_ response]]
+   (assoc db :ajax-error (or (:error (:response response)) DEFAULT-ERROR-MESSAGE))))
 
 (rf/reg-event-fx
  :delete-patient
@@ -108,7 +108,7 @@
                  :format (ajax/json-request-format)
                  :params (:patient db)
                  :on-success [:on-add-patient-success]
-                 :on-failure [:on-add-patient-error]}}))
+                 :on-failure [:ajax-error]}}))
 
 (rf/reg-event-db
  :on-add-patient-success
@@ -117,12 +117,6 @@
    (-> db
        (update-in [:patients] #(into [(:patient response)] %))
        (assoc :ajax-success (:message response)))))
-
-(rf/reg-event-fx
- :on-add-patient-error
- check-spec-interceptor
- (fn [_ [_ response]]
-   {:fx [[:dispatch [:ajax-error (:error (:response response))]]]}))
 
 (rf/reg-event-db
  :clear-patient
