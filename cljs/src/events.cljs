@@ -73,6 +73,12 @@
                  :on-failure [:ajax-error]}}))
 
 (rf/reg-event-db
+ :edit-patient
+ check-spec-interceptor
+ (fn [db [_ mid]]
+   (assoc-in db [:patient] (first (filter #(= mid (:mid %)) (:patients db))))))
+
+(rf/reg-event-db
  :on-delete-patient-success
  check-spec-interceptor
  (fn [db [_ mid]]

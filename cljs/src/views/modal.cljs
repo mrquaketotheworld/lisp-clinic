@@ -1,4 +1,4 @@
-(ns views.modal ; TODO add validation patient exists
+(ns views.modal
   (:require [re-frame.core :as rf]
             [dispatches :refer [hide-modal on-patient-form-change trim-form add-patient
                                 clear-patient]]
@@ -50,7 +50,7 @@
     [:div.modal-card
      [:header.modal-card-head
       [:p.modal-card-title "title"]
-      [:button.delete {:on-click hide-modal}]]
+      [:div.delete {:on-click hide-modal}]]
      [:section.modal-card-body
       [:div.columns
        [input {:field-key :firstname

@@ -1,6 +1,11 @@
 (ns views.table
   (:require [re-frame.core :as rf]
-            [dispatches :refer [show-modal delete-patient remove-ajax-success remove-ajax-error]]))
+            [dispatches :refer [show-modal delete-patient remove-ajax-success remove-ajax-error
+                                edit-patient]]))
+
+(defn on-edit-patient [mid]
+  (edit-patient mid)
+  (show-modal))
 
 (defn render-patients-rows [patients]
   (map-indexed (fn [i {:keys [firstname lastname gender birth city street house mid]}]
@@ -13,7 +18,7 @@
                   [:td (str city ", " street ", " house)]
                   [:td mid]
                   [:td.has-text-right
-                   [:button.button.is-warning.mr-3
+                   [:button.button.is-warning.mr-3 {:on-click #(on-edit-patient mid)}
                     [:span.icon.is-small
                      [:i.fa-solid.fa-pen]]]
                    [:button.button.is-danger {:on-click #(delete-patient mid)}
