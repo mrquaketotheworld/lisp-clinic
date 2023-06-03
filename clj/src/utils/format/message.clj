@@ -7,9 +7,10 @@
    :headers APPLICATION-JSON
    :body {:error value}})
 
-(defn success
-  ([] (success {:success true}))
-  ([body]
-   {:status 200
-    :headers APPLICATION-JSON
-    :body body}))
+(defmulti success type)
+(defmethod success java.lang.String [value]
+  (success {:message value}))
+(defmethod success :default [value]
+  {:status 200
+   :headers APPLICATION-JSON
+   :body value})

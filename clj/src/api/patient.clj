@@ -20,19 +20,17 @@
                       (if patient-row
                         (message/error (:patient-exists error/errors))
                         (do (patient/add formatted-patient-form)
-                            (message/success {:patient formatted-patient-form
-                                              :message "Patient was successfully added"}))))))
+                            (message/success "Patient was successfully added"))))))
 
 (defn delete [request]
   (patient/delete (:mid (:path-params request)))
-  (message/success))
+  (message/success "Patient was successfully deleted"))
 
 (defn edit [request]
   (add-edit request (fn [patient-row formatted-patient-form]
                       (if patient-row
                         (do (patient/edit formatted-patient-form)
-                            (message/success {:patient formatted-patient-form
-                                              :message "Patient was successfully edited"}))
+                            (message/success "Patient was successfully edited"))
                         (message/error (:patient-doesnt-exist error/errors))))))
 
 (defn get-by-mid [request]

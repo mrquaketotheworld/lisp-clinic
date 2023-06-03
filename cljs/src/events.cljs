@@ -84,7 +84,7 @@
                  :uri (str "/api/patient/delete/" mid)
                  :body {}
                  :response-format (ajax/json-response-format {:keywords? true})
-                 :on-success [:on-delete-patient-success mid]
+                 :on-success [:on-add-edit-delete-patient-success]
                  :on-failure [:ajax-error]}}))
 
 (rf/reg-event-db
@@ -92,12 +92,6 @@
  check-spec-interceptor
  (fn [db [_ mid]]
    (assoc-in db [:patient] (first (filter #(= mid (:mid %)) (:patients db))))))
-
-(rf/reg-event-db
- :on-delete-patient-success
- check-spec-interceptor
- (fn [db [_ mid]]
-   (assoc db :patients (filter #(not= (:mid %) mid) (:patients db)))))
 
 (rf/reg-event-db
  :form-change
@@ -126,11 +120,11 @@
                  :response-format (ajax/json-response-format {:keywords? true})
                  :format (ajax/json-request-format)
                  :params (:patient db)
-                 :on-success [:on-add-edit-patient-success]
+                 :on-success [:on-add-edit-delete-patient-success]
                  :on-failure [:ajax-error]}}))
 
 (rf/reg-event-fx
- :on-add-edit-patient-success
+ :on-add-edit-delete-patient-success
  check-spec-interceptor
  (fn [{:keys [db]} [_ response]]
    {:db (assoc db :ajax-success (:message response))
