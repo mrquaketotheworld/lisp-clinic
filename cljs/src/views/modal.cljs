@@ -41,7 +41,7 @@
       [:option {:value "Male"} "Male"]
       [:option {:value "Female"} "Female"]]]
     [:div.icon.is-small.is-left
-     [:i.fa-regular.fa-person-circle-question]]]])
+     [:i.fa-solid.fa-person-circle-question]]]])
 
 (defn modal []
   [:form
@@ -76,12 +76,12 @@
                :title "MID length should be 12"
                :max-length 12
                :disabled (= @(rf/subscribe [:patient-form-mode]) "edit")
-               :classes "fa-solid fa-file-medical"}]]
+               :classes "fa-solid fa-id-card-clip"}]]
       [:div.columns
        [input {:label "City"
                :input-name "city"
                :placeholder "New York"
-               :classes "fa-solid fa-globe"}]
+               :classes "fa-solid fa-tree-city"}]
        [input {:label "Street"
                :input-name "street"
                :placeholder "Park Avenue"

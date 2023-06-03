@@ -28,7 +28,7 @@
       [:option {:value "Male"} "Male"]
       [:option {:value "Female"} "Female"]]]
     [:div.icon.is-small.is-left
-     [:i.fa-regular.fa-person-circle-question]]]])
+     [:i.fa-solid.fa-person-circle-question]]]])
 
 (defn header []
   [:<>
@@ -44,11 +44,14 @@
                                              [select-age "age-top"]]]
       [:div.field
        [:label.label "City"]
-       [:input.input {:type "text" :name "city"
-                      :placeholder "San Antonio"
-                      :value (:city @(rf/subscribe [:filter-search]))
-                      :on-change (on-input-change :city)
-                      :on-blur trim-form-filter-search}]]]]
+       [:div.control.has-icons-left
+        [:input.input {:type "text" :name "city"
+                       :placeholder "San Antonio"
+                       :value (:city @(rf/subscribe [:filter-search]))
+                       :on-change (on-input-change :city)
+                       :on-blur trim-form-filter-search}]
+        [:div.icon.is-small.is-left
+         [:i.fa-solid.fa-tree-city]]]]]]
     [:div.column.is-half
      [:div.field
       [:label.label "Search"]
