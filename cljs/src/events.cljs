@@ -131,13 +131,14 @@
                                     :on-edit-patient-success)]
                    :on-failure [:ajax-error]}})))
 
-(rf/reg-event-db
+(rf/reg-event-fx
  :on-add-patient-success
  check-spec-interceptor
- (fn [db [_ response]]
-   (-> db
-       (update-in [:patients] #(into [(:patient response)] %))
-       (assoc :ajax-success (:message response)))))
+ (fn [{:keys [db]} [_ response]]
+   {:db (-> db
+            (update-in [:patients] #(into [(:patient response)] %))
+            (assoc :ajax-success (:message response)))
+    :fx [[:dispatch [:get-cities]]]}))
 
 (rf/reg-event-db
  :on-edit-patient-success
