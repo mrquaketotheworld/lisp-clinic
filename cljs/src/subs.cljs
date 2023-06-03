@@ -25,3 +25,8 @@
  :patient
  (fn [db]
    (:patient db)))
+
+(rf/reg-sub
+ :patient-form-mode
+ (fn [db]
+   (:patient-form-mode db)))

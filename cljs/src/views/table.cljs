@@ -1,10 +1,16 @@
 (ns views.table
   (:require [re-frame.core :as rf]
             [dispatches :refer [show-modal delete-patient remove-ajax-success remove-ajax-error
-                                fill-edit-patient]]))
+                                fill-edit-patient patient-form-mode clear-patient]]))
 
 (defn on-edit-patient [mid]
+  (patient-form-mode "edit")
   (fill-edit-patient mid)
+  (show-modal))
+
+(defn on-add-patient []
+  (patient-form-mode "add")
+  (clear-patient)
   (show-modal))
 
 (defn render-patients-rows [patients]
@@ -48,7 +54,7 @@
           [:th "Address"]
           [:th "MID"]
           [:th.has-text-right
-           [:button.button.is-info.is-pull-right {:on-click show-modal}
+           [:button.button.is-info.is-pull-right {:on-click on-add-patient}
             [:span.icon.is-small
              [:i.fa-solid.fa-user-plus]]
             [:span "Add patient"]]]]]

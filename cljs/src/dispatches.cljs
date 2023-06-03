@@ -22,8 +22,8 @@
 (defn trim-form []
   (rf/dispatch [:trim-form]))
 
-(defn add-patient []
-  (rf/dispatch [:add-patient]))
+(defn add-edit-patient []
+  (rf/dispatch [:add-edit-patient]))
 
 (defn clear-patient []
   (rf/dispatch [:clear-patient]))
@@ -34,5 +34,6 @@
 (defn remove-ajax-error []
   (rf/dispatch [:remove-ajax-error]))
 
-
+(defn patient-form-mode [mode ]
+  (rf/dispatch [:patient-form-mode mode]))
 

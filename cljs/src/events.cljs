@@ -19,6 +19,7 @@
  check-spec-interceptor
  (fn []
    {:modal-active? false
+    :patient-form-mode "add"
     :patient default-patient}))
 
 (rf/reg-event-db
@@ -99,11 +100,11 @@
                     (assoc acc (first key-value) (.trim (second key-value)))) {} (:patient db)))))
 
 (rf/reg-event-fx
- :add-patient
+ :add-edit-patient
  check-spec-interceptor
  (fn [{:keys [db]}]
    {:http-xhrio {:method :post
-                 :uri "/api/patient/add"
+                 :uri (str "/api/patient/" (:patient-form-mode db))
                  :response-format (ajax/json-response-format {:keywords? true})
                  :format (ajax/json-request-format)
                  :params (:patient db)
@@ -123,3 +124,9 @@
  check-spec-interceptor
  (fn [db]
    (assoc db :patient default-patient)))
+
+(rf/reg-event-db
+ :patient-form-mode
+ check-spec-interceptor
+ (fn [db [_ mode]]
+   (assoc db :patient-form-mode mode)))

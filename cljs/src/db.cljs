@@ -16,9 +16,10 @@
 (spec/def ::modal-active? boolean?)
 (spec/def ::patients seqable?)
 (spec/def ::ajax-success string?)
+(spec/def ::patient-form-mode #(or (= % "add") (= % "edit")))
 (spec/def ::ajax-error string?)
 (spec/def ::db (spec/keys :opt-un [::patient ::modal-active? ::patients ::ajax-success
-                                   ::ajax-error]))
+                                   ::ajax-error ::patient-form-mode]))
 
 (defn check-and-throw [a-spec db]
   (when-not (spec/valid? a-spec db)

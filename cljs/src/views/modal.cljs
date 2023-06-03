@@ -1,7 +1,6 @@
 (ns views.modal
   (:require [re-frame.core :as rf]
-            [dispatches :refer [hide-modal on-patient-form-change trim-form add-patient
-                                clear-patient]]
+            [dispatches :refer [hide-modal on-patient-form-change trim-form add-edit-patient]]
             [utils.format.time :as time]))
 
 (defn on-input-change [field-key]
@@ -9,9 +8,8 @@
 
 (defn on-form-submit [event]
   (.preventDefault event)
-  (add-patient)
-  (hide-modal)
-  (clear-patient))
+  (add-edit-patient)
+  (hide-modal))
 
 (defn input [options-arrived]
   (let [defaults {:max-length 128}
