@@ -7,7 +7,7 @@
   "scripts": {
     "start": "npx shadow-cljs watch client",
     "build": "npx shadow-cljs release client",
-    "lint": "clj-kondo --lint src"
+    "lint": "clj-kondo --lint src --lint test"
   },
   "devDependencies": {
     "shadow-cljs": "2.23.1"
