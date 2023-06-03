@@ -1,54 +1,12 @@
 (ns api.patient-test
   (:require [clojure.test :refer [deftest is testing use-fixtures]]
-            [next.jdbc :as jdbc]
-            [ring.mock.request :as mock]
-            [cheshire.core :as json]
             [core]
-            [config :as config-src-dir]
-            [db.init-tables :as init-tables]
             [utils.validation.error :as error]
-            [utils.format.patient :as patient-format]))
-
-(def db-test {:dbtype "postgresql"
-              :dbname "postgres"
-              :host "localhost"
-              :user "postgres"
-              :password "postgres"})
-
-(defn json-parse-body [body]
-  (json/parse-string body true))
-
-(defn mock-request [request-type url]
-  (-> (mock/request request-type url)
-      core/wrapped-app
-      :body
-      json-parse-body))
-
-(defn mock-request-get [url]
-  (mock-request :get url))
-
-(defn mock-request-delete [mid]
-  (mock-request :delete (str "/api/patient/delete/" mid)))
-
-(defn mock-request-post [url body]
-  (-> (mock/request :post url)
-      (mock/json-body body)
-      core/wrapped-app
-      :body
-      json-parse-body))
-
-(defn mock-request-patient-add [body]
-  (mock-request-post "/api/patient/add" body))
-
-(defn mock-request-patient-get-by-mid [mid]
-  (-> (str "/api/patient/get/" mid)
-      mock-request-get))
-
-(defn mock-request-patient-search [query-string]
-  (mock-request-get (str "/api/patient/search?" query-string)))
-
-(defn mock-request-patient-edit [body]
-  (mock-request-post "/api/patient/edit" body))
+            [utils.format.patient :as patient-format]
+            [fixtures]
+            [utils :refer [mock-request-patient-add mock-request-delete
+                           mock-request-patient-search mock-request-patient-edit
+                           mock-request-patient-get-by-mid]]))
 
 (defn patients-count-equals? [patients value]
   (is (= (count patients) value)))
@@ -66,18 +24,8 @@
 (defn patient-doesnt-exist? [patient]
   (equals-error? (:patient-doesnt-exist error/errors) patient))
 
-(defn db-fixture [test-run]
-  (config-src-dir/set-config! db-test) ; make global TEST configuration
-  (jdbc/execute-one! db-test ["DROP TABLE IF EXISTS address, gender, patient"])
-  (init-tables/-main)
-  (test-run))
-(use-fixtures :once db-fixture)
-
-(defn clear-tables-fixture [test-run]
-  (jdbc/execute! db-test ["DELETE FROM patient;
-                           DELETE FROM address"])
-  (test-run))
-(use-fixtures :each clear-tables-fixture)
+(use-fixtures :once fixtures/db-fixture)
+(use-fixtures :each fixtures/clear-tables-fixture)
 
 (deftest patient-add
   (println 'RUN-PATIENT-ADD)
