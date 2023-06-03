@@ -4,12 +4,10 @@
 
 (defn format-patient-form [patient-form]
   (reduce (fn [acc key-value]
-            (let [key (first key-value) value (second key-value)]
+            (let [key (first key-value) value (string/trim (second key-value))]
               (if (= key :mid)
                 (assoc acc key value)
-                (assoc acc key (-> value
-                                   string/trim
-                                   format-capitalize/capitalize-words))))) {} patient-form))
+                (assoc acc key (format-capitalize/capitalize-words value))))) {} patient-form))
 
 (defn format-patient-search-form [patient-form]
   (let [formatted-patient-form (format-patient-form patient-form)]
