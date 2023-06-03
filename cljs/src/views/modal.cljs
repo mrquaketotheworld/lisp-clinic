@@ -51,7 +51,7 @@
     [:div.modal-background]
     [:div.modal-card
      [:header.modal-card-head
-      [:p.modal-card-title "title"]
+      [:p.modal-card-title  (str @(rf/subscribe [:patient-form-mode]) " patient")]
       [:div.delete {:on-click hide-modal}]]
      [:section.modal-card-body
       [:div.columns
