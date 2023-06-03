@@ -36,3 +36,8 @@
  (fn [db]
    (:filter-search db)))
 
+(rf/reg-sub
+ :cities
+ (fn [db]
+   (:cities db)))
+

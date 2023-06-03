@@ -5,7 +5,7 @@
             [events]
             [subs]
             [views.app :refer [app]]
-            [dispatches :refer [search-patients]]))
+            [dispatches :refer [search-patients get-cities]]))
 
 (defn render []
   (reagent.dom/render [app] (js/document.getElementById "app")))
@@ -17,4 +17,5 @@
 (defn -main []
   (rf/dispatch-sync [:init-db])
   (search-patients)
+  (get-cities)
   (render))

@@ -43,3 +43,6 @@
 (defn patient-form-mode [mode ]
   (rf/dispatch [:patient-form-mode mode]))
 
+(defn get-cities []
+  (rf/dispatch [:get-cities]))
+

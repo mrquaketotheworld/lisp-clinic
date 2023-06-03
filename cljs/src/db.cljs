@@ -20,13 +20,15 @@
 (spec/def ::filter-search (spec/keys :req-un [::age-bottom ::age-top ::gender ::city ::search
                                               ::offset ::limit]))
 
+(spec/def ::cities (spec/coll-of string?))
+
 (spec/def ::modal-active? boolean?)
 (spec/def ::ajax-success string?)
 (spec/def ::ajax-error string?)
 (spec/def ::patient-form-mode #(or (= % "add") (= % "edit")))
 (spec/def ::patients (spec/coll-of ::patient))
 (spec/def ::db (spec/keys :req-un [::patients ::patient ::modal-active? ::patient-form-mode
-                                   ::filter-search]
+                                   ::filter-search ::cities]
                           :opt-un [::ajax-success ::ajax-error]))
 
 (defn check-and-throw [a-spec db]

@@ -31,6 +31,7 @@
     :patient-form-mode "add"
     :patient default-patient
     :filter-search default-filter-search
+    :cities []
     :patients []}))
 
 (rf/reg-event-db
@@ -161,3 +162,20 @@
  check-spec-interceptor
  (fn [db [_ mode]]
    (assoc db :patient-form-mode mode)))
+
+(rf/reg-event-fx
+ :get-cities
+ check-spec-interceptor
+ (fn []
+   {:http-xhrio {:method :get
+                 :uri "/api/address/cities"
+                 :response-format (ajax/json-response-format {:keywords? true})
+                 :on-success [:on-get-cities-success]
+                 :on-failure [:ajax-error]}}))
+
+(rf/reg-event-db
+ :on-get-cities-success
+ check-spec-interceptor
+ (fn [db [_ cities]]
+   (assoc db :cities cities)))
+

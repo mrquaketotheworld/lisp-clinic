@@ -32,9 +32,10 @@
 (defn select-city []
   [:div.control.has-icons-left
    [:div.select
-    [:select {:name "city" :value (:city @(rf/subscribe [:filter-search]))
+    [:select.select-city {:name "city" :value (:city @(rf/subscribe [:filter-search]))
               :on-change (on-input-change :city)}
-     [:option {:value ""} "All"]]]
+      [:option {:value ""} "All"]
+     (map #(identity [:option {:value % :key %} %]) @(rf/subscribe [:cities]))]]
    [:div.icon.is-small.is-left
     [:i.fa-solid.fa-tree-city]]])
 

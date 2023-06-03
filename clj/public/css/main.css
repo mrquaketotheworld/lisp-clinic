@@ -18,3 +18,7 @@ table {
 table td, .table th {
   vertical-align: middle !important;
 }
+
+.select-city {
+  width: 135px;
+}
