@@ -121,36 +121,21 @@
  :add-edit-patient
  check-spec-interceptor
  (fn [{:keys [db]}]
-   (let [mode (:patient-form-mode db)]
-     {:http-xhrio {:method :post
-                   :uri (str "/api/patient/" mode)
-                   :response-format (ajax/json-response-format {:keywords? true})
-                   :format (ajax/json-request-format)
-                   :params (:patient db)
-                   :on-success [(if (= mode "add") :on-add-patient-success
-                                    :on-edit-patient-success)]
-                   :on-failure [:ajax-error]}})))
+   {:http-xhrio {:method :post
+                 :uri (str "/api/patient/" (:patient-form-mode db))
+                 :response-format (ajax/json-response-format {:keywords? true})
+                 :format (ajax/json-request-format)
+                 :params (:patient db)
+                 :on-success [:on-add-edit-patient-success]
+                 :on-failure [:ajax-error]}}))
 
 (rf/reg-event-fx
- :on-add-patient-success
+ :on-add-edit-patient-success
  check-spec-interceptor
  (fn [{:keys [db]} [_ response]]
-   {:db (-> db
-            (update-in [:patients] #(into [(:patient response)] %))
-            (assoc :ajax-success (:message response)))
-    :fx [[:dispatch [:get-cities]]]}))
-
-(rf/reg-event-db
- :on-edit-patient-success
- check-spec-interceptor
- (fn [db [_ response]]
-   (let [patient-arrived (:patient response)]
-     (-> db
-         (update-in [:patients] #(map (fn [patient]
-                                        (if (= (:mid patient) (:mid patient-arrived))
-                                          patient-arrived
-                                          patient)) %))
-         (assoc :ajax-success (:message response))))))
+   {:db (assoc db :ajax-success (:message response))
+    :fx [[:dispatch [:search-patients]]
+         [:dispatch [:get-cities]]]}))
 
 (rf/reg-event-db
  :clear-patient
