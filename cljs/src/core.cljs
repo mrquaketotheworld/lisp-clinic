@@ -1,4 +1,4 @@
-(ns core
+(ns core ; TODO test from scratch
   (:require [reagent.dom]
             [re-frame.core :as rf]
             [day8.re-frame.http-fx]

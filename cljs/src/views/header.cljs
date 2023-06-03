@@ -1,6 +1,7 @@
 (ns views.header
   (:require [re-frame.core :as rf]
-            [dispatches :refer [on-filter-search-form-change trim-form-filter-search]]))
+            [dispatches :refer [on-filter-search-form-change trim-form-filter-search
+                                search-patients]]))
 
 (defn on-input-change [field-key]
   #(on-filter-search-form-change field-key (.. % -target -value)))
@@ -33,8 +34,8 @@
   [:div.control.has-icons-left
    [:div.select
     [:select.select-city {:name "city" :value (:city @(rf/subscribe [:filter-search]))
-              :on-change (on-input-change :city)}
-      [:option {:value ""} "All"]
+                          :on-change (on-input-change :city)}
+     [:option {:value ""} "All"]
      (map #(identity [:option {:value % :key %} %]) @(rf/subscribe [:cities]))]]
    [:div.icon.is-small.is-left
     [:i.fa-solid.fa-tree-city]]])
@@ -70,7 +71,7 @@
         [:div.icon.is-small.is-left
          [:i.fa-sharp.fa-solid.fa-keyboard]]]
        [:div.control
-        [:button.button.is-primary
+        [:button.button.is-primary {:on-click search-patients}
          [:span.icon.is-small [:i.fa-solid.fa-magnifying-glass]]
          [:span "Go"]]]]]]]])
 
