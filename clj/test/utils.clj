@@ -38,3 +38,5 @@
 (defn mock-request-patient-edit [body]
   (mock-request-post "/api/patient/edit" body))
 
+(defn mock-request-get-cities []
+  (mock-request-get "/api/address/cities"))

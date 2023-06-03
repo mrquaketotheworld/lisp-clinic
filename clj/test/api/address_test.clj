@@ -2,7 +2,7 @@
   (:require [clojure.test :refer [deftest is testing use-fixtures]]
             [core]
             [fixtures]
-            [utils :refer [mock-request-patient-add mock-request-get]]))
+            [utils :refer [mock-request-patient-add mock-request-get-cities]]))
 
 (deftest get-cities
   (println 'RUN-ADDRESS-GET-CITIES)
@@ -32,7 +32,13 @@
                                :street "big apple"
                                :house "20"
                                :mid "123426782330"})
-    (is (= (mock-request-get "/api/address/cities") '("New York" "Los Angeles")))))
+    (is (= (mock-request-get-cities) '("New York" "Los Angeles")))))
+
+(deftest get-cities-empty
+  (println 'RUN-ADDRESS-GET-CITIES-EMPTY)
+
+  (testing "Get cities empty"
+    (is (empty? (mock-request-get-cities)))))
 
 (use-fixtures :once fixtures/db-fixture)
 (use-fixtures :each fixtures/clear-tables-fixture)
