@@ -21,6 +21,9 @@
 (defn equals-error? [message error]
   (is (= message (:error error))))
 
+(defn is-success-message [body message]
+  (is (= (:message body) message)))
+
 (defn patient-doesnt-exist? [patient]
   (equals-error? (:patient-doesnt-exist error/errors) patient))
 
@@ -87,8 +90,8 @@
                         :street "big apple"
                         :house "20"
                         :mid "123426782328"}
-          response (mock-request-patient-add liza-simpson)]
-      (patient-equals? (:patient response) liza-simpson)))
+          body (mock-request-patient-add liza-simpson)]
+      (is-success-message body "Patient was successfully added")))
 
   (testing "Validation, patient without field"
     (let [body (mock-request-patient-add {:firstname "Liza"
@@ -116,7 +119,7 @@
                                  :mid mid})
       (let [body (mock-request-delete mid)
             patient (mock-request-patient-get-by-mid mid)]
-        (is (:success body))
+        (is-success-message body "Patient was successfully deleted")
         (patient-doesnt-exist? patient)))))
 
 (deftest patient-edit
