@@ -32,7 +32,7 @@
                                :street "big apple"
                                :house "20"
                                :mid "123426782330"})
-    (is (= (mock-request-get-cities) '("New York" "Los Angeles")))))
+    (is (= (mock-request-get-cities) '("Los Angeles" "New York")))))
 
 (deftest get-cities-empty
   (println 'RUN-ADDRESS-GET-CITIES-EMPTY)

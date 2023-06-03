@@ -15,5 +15,6 @@
                              :house house} {:return-keys ["id"]})))
 
 (defn get-cities []
-  (address-format/take-cities-values (jdbc/execute! db-config ["SELECT DISTINCT city FROM address"]
+  (address-format/take-cities-values (jdbc/execute! db-config ["SELECT DISTINCT city FROM address
+                                                               ORDER BY city"]
                                                     {:builder-fn rs/as-unqualified-lower-maps})))
