@@ -4,4 +4,4 @@
 (defn parse-date [date]
   (try
     (LocalDate/parse date)
-    (catch Exception e)))
+    (catch Exception e (println e))))
