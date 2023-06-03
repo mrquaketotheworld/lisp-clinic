@@ -29,6 +29,15 @@
     [:div.icon.is-small.is-left
      [:i.fa-solid.fa-person-circle-question]]]])
 
+(defn select-city []
+  [:div.control.has-icons-left
+   [:div.select
+    [:select {:name "city" :value (:city @(rf/subscribe [:filter-search]))
+              :on-change (on-input-change :city)}
+     [:option {:value ""} "All"]]]
+   [:div.icon.is-small.is-left
+    [:i.fa-solid.fa-tree-city]]])
+
 (defn header []
   [:<>
    [:div.level
@@ -44,11 +53,7 @@
       [:div.field
        [:label.label "City"]
        [:div.control.has-icons-left
-        [:input.input {:type "text" :name "city"
-                       :placeholder "San Antonio"
-                       :value (:city @(rf/subscribe [:filter-search]))
-                       :on-change (on-input-change :city)
-                       :on-blur trim-form-filter-search}]
+        [select-city]
         [:div.icon.is-small.is-left
          [:i.fa-solid.fa-tree-city]]]]]]
     [:div.column.is-half

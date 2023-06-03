@@ -11,6 +11,7 @@
             [db.init-tables :as init-tables]
             [reitit.ring :as ring]
             [api.patient :as patient]
+            [api.address :as address]
             [config]
             [utils.file.interact :as file]))
 
@@ -24,7 +25,9 @@
        ["/delete/:mid" {:delete patient/delete}]
        ["/edit" {:post patient/edit}]
        ["/get/:mid" {:get patient/get-by-mid}]
-       ["/search" {:get patient/search}]]]]
+       ["/search" {:get patient/search}]]
+      ["/address"
+       ["/cities" {:get address/get-cities}]]]]
     {:data {:middleware [exception/exception-middleware]}})
    (ring/create-default-handler
     {:not-found (fn [_] (redirect "/"))})))
