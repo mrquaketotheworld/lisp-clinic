@@ -1,12 +1,21 @@
-(ns views.header)
+(ns views.header
+  (:require [re-frame.core :as rf]
+            [dispatches :refer [on-filter-search-form-change trim-form-filter-search]]))
 
-(defn select-age [select-name default-option]
-  [:div.control.has-icons-left
-   [:div.select
-    [:select {:name select-name :default-value default-option}
-     (map (fn [i] [:option {:value i :key i} i]) (range 101))]]
-   [:div.icon.is-small.is-left
-    [:i.fa-solid.fa-list-ol]]])
+(defn on-input-change [field-key]
+  #(on-filter-search-form-change field-key (.. % -target -value)))
+
+(defn select-age [select-name]
+  (let [keyword-select-name (keyword select-name)]
+    (pr keyword-select-name)
+    [:div.control.has-icons-left
+     [:div.select
+      [:select {:name select-name
+                :value (keyword-select-name @(rf/subscribe [:filter-search]))
+                :on-change (on-input-change keyword-select-name)}
+       (map (fn [i] [:option {:value i :key i} i]) (range 101))]]
+     [:div.icon.is-small.is-left
+      [:i.fa-solid.fa-list-ol]]]))
 
 (defn select-city []
   [:div.control.has-icons-left
@@ -21,7 +30,8 @@
    [:label.label "Gender"]
    [:div.control.has-icons-left
     [:div.select
-     [:select {:name "gender"}
+     [:select {:name "gender" :value (:gender @(rf/subscribe [:filter-search]))
+               :on-change (on-input-change :gender)}
       [:option {:value ""} "All"]
       [:option {:value "Male"} "Male"]
       [:option {:value "Female"} "Female"]]]
@@ -38,8 +48,8 @@
      [:div.field.is-grouped
       [select-gender]
       [:div.field.mr-4 [:label.label "Age"] [:div.field.is-grouped
-                                             [select-age "age-bottom" "0"]
-                                             [select-age "age-top" "100"]]]
+                                             [select-age "age-bottom"]
+                                             [select-age "age-top"]]]
       [:div.field [:label.label "City"] [select-city]]]]
     [:div.column.is-half
      [:div.field
@@ -47,7 +57,10 @@
       [:div.field.is-grouped
        [:div.control.is-expanded.has-icons-left
         [:input.input {:type "search" :name "search"
-                       :placeholder (str "John Doe, 381293...")}]
+                       :placeholder (str "John Doe, 381293...")
+                       :value (:search @(rf/subscribe [:filter-search]))
+                       :on-change (on-input-change :search)
+                       :on-blur trim-form-filter-search}]
         [:div.icon.is-small.is-left
          [:i.fa-sharp.fa-solid.fa-keyboard]]]
        [:div.control

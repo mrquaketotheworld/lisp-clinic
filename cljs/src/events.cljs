@@ -15,12 +15,12 @@
                       :house ""})
 
 (def default-filter-search {:gender ""
-                     :age-bottom ""
-                     :age-top ""
-                     :city ""
-                     :search ""
-                     :offset ""
-                     :limit ""})
+                            :age-bottom "0"
+                            :age-top "100"
+                            :city ""
+                            :search ""
+                            :offset ""
+                            :limit ""})
 
 (rf/reg-event-db
  :init-db
@@ -96,18 +96,18 @@
    (assoc db :patients (filter #(not= (:mid %) mid) (:patients db)))))
 
 (rf/reg-event-db
- :patient-form-change
+ :form-change
  check-spec-interceptor
- (fn [db [_ field-key value]]
-   (assoc-in db [:patient field-key] value)))
+ (fn [db [_ form field-key value]]
+   (assoc-in db [form field-key] value)))
 
 (rf/reg-event-db
  :trim-form
  check-spec-interceptor
- (fn [db]
-   (assoc db :patient
+ (fn [db [_ field-key]]
+   (assoc db field-key
           (reduce (fn [acc key-value]
-                    (assoc acc (first key-value) (.trim (second key-value)))) {} (:patient db)))))
+                    (assoc acc (first key-value) (.trim (second key-value)))) {} (field-key db)))))
 
 (rf/reg-event-fx
  :add-edit-patient

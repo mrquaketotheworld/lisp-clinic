@@ -17,10 +17,16 @@
   (rf/dispatch [:fill-edit-patient mid]))
 
 (defn on-patient-form-change [field-key value]
-  (rf/dispatch [:patient-form-change field-key value]))
+  (rf/dispatch [:form-change :patient field-key value]))
 
-(defn trim-form []
-  (rf/dispatch [:trim-form]))
+(defn on-filter-search-form-change [field-key value]
+  (rf/dispatch [:form-change :filter-search field-key value]))
+
+(defn trim-form-patient []
+  (rf/dispatch [:trim-form :patient]))
+
+(defn trim-form-filter-search []
+  (rf/dispatch [:trim-form :filter-search]))
 
 (defn add-edit-patient []
   (rf/dispatch [:add-edit-patient]))

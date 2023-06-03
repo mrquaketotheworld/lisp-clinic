@@ -1,6 +1,6 @@
 (ns views.modal
   (:require [re-frame.core :as rf]
-            [dispatches :refer [hide-modal on-patient-form-change trim-form add-edit-patient]]
+            [dispatches :refer [hide-modal on-patient-form-change trim-form-patient add-edit-patient]]
             [utils.format.time :as time]))
 
 (defn on-input-change [field-key]
@@ -45,7 +45,7 @@
 
 (defn modal []
   [:form
-   {:method "POST" :on-submit on-form-submit :on-blur trim-form}
+   {:method "POST" :on-submit on-form-submit :on-blur trim-form-patient}
    [:div.modal {:class (when @(rf/subscribe [:modal-active?]) "is-active")}
     [:div.modal-background]
     [:div.modal-card

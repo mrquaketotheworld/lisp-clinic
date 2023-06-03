@@ -30,3 +30,9 @@
  :patient-form-mode
  (fn [db]
    (:patient-form-mode db)))
+
+(rf/reg-sub
+ :filter-search
+ (fn [db]
+   (:filter-search db)))
+
