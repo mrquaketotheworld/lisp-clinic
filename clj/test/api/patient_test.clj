@@ -131,15 +131,16 @@
         (equals-error? (:patient-exists error/errors) body))))
 
   (testing "Patient was saved"
-    (let [body (mock-request-patient-add {:firstname "Liza"
-                                          :lastname "Simpson"
-                                          :gender "Female"
-                                          :birth "1994-10-30"
-                                          :city "New york"
-                                          :street "big apple"
-                                          :house "20"
-                                          :mid "123426782328"})]
-      (is (:success body))))
+    (let [liza-simpson {:firstname "Liza"
+                        :lastname "Simpson"
+                        :gender "Female"
+                        :birth "1994-10-30"
+                        :city "New york"
+                        :street "big apple"
+                        :house "20"
+                        :mid "123426782328"}
+          response (mock-request-patient-add liza-simpson)]
+      (patient-equals? (:patient response) liza-simpson)))
 
   (testing "Validation, patient without field"
     (let [body (mock-request-patient-add {:firstname "Liza"
@@ -150,7 +151,7 @@
                                           :house "20B"
                                           :mid "123426782328"})]
       (is (= {:error {:keys-missing-or-not-valid ["firstname" "lastname" "birth" "city" "street"
-                                                   "house" "mid"]}} body)))))
+                                                  "house" "mid"]}} body)))))
 
 (deftest patient-delete
   (println 'RUN-PATIENT-DELETE)
@@ -270,10 +271,10 @@
                                  "city=New%20york&age-bottom=92&age-top=93&limit=1&offset=0"))]
         (found-patients-equals? patients-found jackie-chan-new-york)))
 
-    (testing "Search firstname Rose and lastname Clause"
+    (testing "Search firstname Rose and lastname Clause, check order by created_at DESC"
       (let [patients-found (mock-request-patient-search "search=rose%20cla%2022")]
-        (patient-equals? (first patients-found) rose-chan-new-york)
-        (patient-equals? (second patients-found) santa-claus-miami)
+        (patient-equals? (first patients-found) santa-claus-miami)
+        (patient-equals? (second patients-found) rose-chan-new-york)
         (patients-count-equals? patients-found 2)))
 
     (testing "Search all from one city"
@@ -314,4 +315,4 @@
 
     (testing "Search with offset 3"
       (let [patients-found (mock-request-patient-search "offset=3")]
-        (found-patients-equals? patients-found santa-claus-miami)))))
+        (found-patients-equals? patients-found jackie-chan-new-york)))))
