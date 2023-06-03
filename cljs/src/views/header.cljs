@@ -17,14 +17,6 @@
      [:div.icon.is-small.is-left
       [:i.fa-solid.fa-list-ol]]]))
 
-(defn select-city []
-  [:div.control.has-icons-left
-   [:div.select
-    [:select {:name "city"}
-     [:option {:value ""} "All"]]]
-   [:div.icon.is-small.is-left
-    [:i.fa-solid.fa-globe]]])
-
 (defn select-gender []
   [:div.field.mr-4
    [:label.label "Gender"]
@@ -50,7 +42,13 @@
       [:div.field.mr-4 [:label.label "Age"] [:div.field.is-grouped
                                              [select-age "age-bottom"]
                                              [select-age "age-top"]]]
-      [:div.field [:label.label "City"] [select-city]]]]
+      [:div.field
+       [:label.label "City"]
+       [:input.input {:type "text" :name "city"
+                      :placeholder "San Antonio"
+                      :value (:city @(rf/subscribe [:filter-search]))
+                      :on-change (on-input-change :city)
+                      :on-blur trim-form-filter-search}]]]]
     [:div.column.is-half
      [:div.field
       [:label.label "Search"]
