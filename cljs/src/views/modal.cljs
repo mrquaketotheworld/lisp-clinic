@@ -1,6 +1,7 @@
 (ns views.modal
   (:require [re-frame.core :as rf]
-            [dispatches :refer [hide-modal on-patient-form-change trim-form-patient add-edit-patient]]
+            [dispatches :refer [hide-modal on-patient-form-change trim-form-patient
+                                add-edit-patient]]
             [utils.format.time :as time]))
 
 (defn on-input-change [field-key]

@@ -1,5 +1,6 @@
 (ns events
   (:require [re-frame.core :as rf]
+            [clojure.string :as string]
             [ajax.core :as ajax]
             [db :refer [check-spec-interceptor]]))
 
@@ -70,7 +71,7 @@
  :ajax-error
  check-spec-interceptor
  (fn [db [_ response]]
-   (assoc db :ajax-error (or (:error (:response response)) DEFAULT-ERROR-MESSAGE))))
+   (assoc db :ajax-error (str (or (:error (:response response)) DEFAULT-ERROR-MESSAGE)))))
 
 (rf/reg-event-fx
  :delete-patient
@@ -107,7 +108,11 @@
  (fn [db [_ field-key]]
    (assoc db field-key
           (reduce (fn [acc key-value]
-                    (assoc acc (first key-value) (.trim (second key-value)))) {} (field-key db)))))
+                    (let [field-key (first key-value)
+                          value (.trim (second key-value))]
+                      (if (= field-key :mid)
+                        (assoc acc field-key (string/replace value #"\W" ""))
+                        (assoc acc field-key value)))) {} (field-key db)))))
 
 (rf/reg-event-fx
  :add-edit-patient
