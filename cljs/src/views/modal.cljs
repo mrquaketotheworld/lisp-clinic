@@ -13,19 +13,21 @@
 
 (defn input [options-arrived]
   (let [defaults {:max-length 128}
-        options (merge defaults options-arrived)]
+        options (merge defaults options-arrived)
+        input-name (:input-name options)
+        keyword-input-name (keyword input-name)]
     [:div.column
      [:label.label (:label options)]
      [:div.control.is-expanded.has-icons-left
-      [:input.input {:type "text" :name (:input-name options)
+      [:input.input {:type "text" :name input-name
                      :placeholder (:placeholder options)
-                     :value ((:field-key options) @(rf/subscribe [:patient]))
+                     :value (keyword-input-name @(rf/subscribe [:patient]))
                      :required true
                      :pattern (:pattern options)
                      :title (:title options)
                      :max-length (:max-length options)
                      :disabled (:disabled options)
-                     :on-change (on-input-change (:field-key options))}]
+                     :on-change (on-input-change keyword-input-name)}]
       [:div.icon.is-small.is-left
        [:i {:class (:classes options)}]]]]))
 
@@ -52,13 +54,11 @@
       [:div.delete {:on-click hide-modal}]]
      [:section.modal-card-body
       [:div.columns
-       [input {:field-key :firstname
-               :label "First Name"
+       [input {:label "First Name"
                :input-name "firstname"
                :placeholder "Homer"
                :classes "fa-solid fa-address-card"}]
-       [input {:field-key :lastname
-               :label "Last Name"
+       [input {:label "Last Name"
                :input-name "lastname"
                :placeholder "Simpson"
                :classes "fa-solid fa-address-card"}]]
@@ -69,8 +69,7 @@
         [:input.input {:type "date" :min "1900-01-01" :max (time/current-date) :required true
                        :on-change (on-input-change :birth)
                        :value (:birth @(rf/subscribe [:patient]))}]]
-       [input {:field-key :mid
-               :label "Medical Insurance ID"
+       [input {:label "Medical Insurance ID"
                :input-name "mid"
                :placeholder "342A2f39a329"
                :pattern ".{12}"
@@ -79,18 +78,15 @@
                :disabled (= @(rf/subscribe [:patient-form-mode]) "edit")
                :classes "fa-solid fa-file-medical"}]]
       [:div.columns
-       [input {:field-key :city
-               :label "City"
+       [input {:label "City"
                :input-name "city"
                :placeholder "New York"
                :classes "fa-solid fa-globe"}]
-       [input {:field-key :street
-               :label "Street"
+       [input {:label "Street"
                :input-name "street"
                :placeholder "Park Avenue"
                :classes "fa-solid fa-road"}]
-       [input {:field-key :house
-               :label "House"
+       [input {:label "House"
                :input-name "house"
                :placeholder "332A"
                :classes "fa-solid fa-house"}]]]
