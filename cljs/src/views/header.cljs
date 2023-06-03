@@ -7,7 +7,6 @@
 
 (defn select-age [select-name]
   (let [keyword-select-name (keyword select-name)]
-    (pr keyword-select-name)
     [:div.control.has-icons-left
      [:div.select
       [:select {:name select-name

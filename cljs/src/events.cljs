@@ -42,10 +42,12 @@
 (rf/reg-event-fx
  :search-patients
  check-spec-interceptor
- (fn []
+ (fn [{:keys [db]}]
    {:http-xhrio {:method :get
                  :uri "/api/patient/search"
+                 :params (into {} (filter #(not= (second %) "") (:filter-search db)))
                  :response-format (ajax/json-response-format {:keywords? true})
+                 :format (ajax/url-request-format)
                  :on-success [:on-search-patients-success]
                  :on-failure [:ajax-error]}}))
 
