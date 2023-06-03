@@ -14,13 +14,23 @@
                       :street ""
                       :house ""})
 
+(def default-filter-search {:gender ""
+                     :age-bottom ""
+                     :age-top ""
+                     :city ""
+                     :search ""
+                     :offset ""
+                     :limit ""})
+
 (rf/reg-event-db
  :init-db
  check-spec-interceptor
  (fn []
    {:modal-active? false
     :patient-form-mode "add"
-    :patient default-patient}))
+    :patient default-patient
+    :filter-search default-filter-search
+    :patients []}))
 
 (rf/reg-event-db
  :modal-active?
@@ -128,9 +138,9 @@
    (let [patient-arrived (:patient response)]
      (-> db
          (update-in [:patients] #(map (fn [patient]
-                                     (if (= (:mid patient) (:mid patient-arrived))
-                                       patient-arrived
-                                       patient)) %))
+                                        (if (= (:mid patient) (:mid patient-arrived))
+                                          patient-arrived
+                                          patient)) %))
          (assoc :ajax-success (:message response))))))
 
 (rf/reg-event-db
