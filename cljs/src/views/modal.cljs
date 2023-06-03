@@ -24,6 +24,7 @@
                      :pattern (:pattern options)
                      :title (:title options)
                      :max-length (:max-length options)
+                     :disabled (:disabled options)
                      :on-change (on-input-change (:field-key options))}]
       [:div.icon.is-small.is-left
        [:i {:class (:classes options)}]]]]))
@@ -71,10 +72,11 @@
        [input {:field-key :mid
                :label "Medical Insurance ID"
                :input-name "mid"
-               :placeholder "342929393329"
+               :placeholder "342A2f39a329"
                :pattern ".{12}"
                :title "MID length should be 12"
                :max-length 12
+               :disabled (= @(rf/subscribe [:patient-form-mode]) "edit")
                :classes "fa-solid fa-file-medical"}]]
       [:div.columns
        [input {:field-key :city
@@ -90,7 +92,7 @@
        [input {:field-key :house
                :label "House"
                :input-name "house"
-               :placeholder "332"
+               :placeholder "332A"
                :classes "fa-solid fa-house"}]]]
      [:footer.modal-card-foot
       [:button.button.is-success "Save"]
