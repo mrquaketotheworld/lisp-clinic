@@ -19,9 +19,7 @@
                             :age-bottom "0"
                             :age-top "100"
                             :city ""
-                            :search ""
-                            :offset ""
-                            :limit ""})
+                            :search ""})
 
 (rf/reg-event-db
  :init-db

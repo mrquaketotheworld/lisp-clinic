@@ -15,10 +15,7 @@
 (spec/def ::age-bottom string?)
 (spec/def ::age-top string?)
 (spec/def ::search string?)
-(spec/def ::offset string?)
-(spec/def ::limit string?)
-(spec/def ::filter-search (spec/keys :req-un [::age-bottom ::age-top ::gender ::city ::search
-                                              ::offset ::limit]))
+(spec/def ::filter-search (spec/keys :req-un [::age-bottom ::age-top ::gender ::city ::search]))
 
 (spec/def ::cities (spec/coll-of string?))
 

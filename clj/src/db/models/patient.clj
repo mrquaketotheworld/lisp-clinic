@@ -46,12 +46,11 @@
                                       :address_id (get-address-id connection city street house)}
                  {:mid mid})))
 
-(defn search [{:keys [search gender city age-bottom age-top limit offset]}]
+(defn search [{:keys [search gender city age-bottom age-top]}]
   (let [empty-city? (empty? city)
         empty-gender? (empty? gender)
         splitted-search (string/join "|" (string/split search #" "))
-        params [age-bottom (inc age-top) splitted-search splitted-search splitted-search limit
-                offset]
+        params [age-bottom (inc age-top) splitted-search splitted-search splitted-search]
         params-city-optional (if empty-city? params (cons city params))
         params-city-gender-optional (if empty-gender? params-city-optional
                                         (cons gender params-city-optional))
@@ -65,7 +64,7 @@
                               "AGE(patient.birth) BETWEEN CAST(? || ' years' AS interval)
                                AND CAST(? || ' years' AS interval) AND
                                (patient.firstname ~* ? OR patient.lastname ~* ?
-                          OR patient.mid ~* ?) ORDER BY patient.created_at DESC LIMIT ? OFFSET ?")]
+                          OR patient.mid ~* ?) ORDER BY patient.created_at DESC")]
                                   params-city-gender-optional)
                                 {:builder-fn rs/as-unqualified-lower-maps})]
     (patient-format/format-patients patients)))

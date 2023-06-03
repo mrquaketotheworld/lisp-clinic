@@ -219,7 +219,7 @@
     (testing "Search 1, all params"
       (let [patients-found (mock-request-patient-search
                             (str "search=JacKIe%20Chan&gender=Male&"
-                                 "city=New%20york&age-bottom=92&age-top=93&limit=1&offset=0"))]
+                                 "city=New%20york&age-bottom=92&age-top=93"))]
         (found-patients-equals? patients-found jackie-chan-new-york)))
 
     (testing "Search firstname Rose and lastname Clause, check order by created_at DESC"
@@ -262,8 +262,4 @@
                                                              "sdfsfsdidx333fsdfsdfsdfsfsdmidx33"
                                                              "3fsdfsdfsdfsfsdmidx333fsdfsdfsdfs"
                                                              "fsdmidx333fsdfsdfsdfsfsd"))]
-        (is (= {:error {:search "Max length is: 128"}} patients-found))))
-
-    (testing "Search with offset 3"
-      (let [patients-found (mock-request-patient-search "offset=3")]
-        (found-patients-equals? patients-found jackie-chan-new-york)))))
+        (is (= {:error {:search "Max length is: 128"}} patients-found))))))

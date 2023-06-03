@@ -15,13 +15,9 @@
                 :search ""
                 :city ""
                 :age-bottom "0"
-                :age-top "100"
-                :limit "10"
-                :offset "0"} formatted-patient-form)
+                :age-top "100"} formatted-patient-form)
         (update :age-bottom read-string)
-        (update :age-top read-string)
-        (update :limit read-string)
-        (update :offset read-string))))
+        (update :age-top read-string))))
 
 (defn format-date [patient]
   (assoc patient :birth (.toString (:birth patient))))
