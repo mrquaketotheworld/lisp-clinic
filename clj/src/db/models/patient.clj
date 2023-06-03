@@ -37,8 +37,7 @@
 (defn delete [mid]
   (sql/delete! db-config :patient {:mid mid}))
 
-(defn edit [{:keys [firstname lastname gender birth city street house
-                    mid]}]
+(defn edit [{:keys [firstname lastname gender birth city street house mid]}]
   (jdbc/with-transaction [connection db-config]
     (sql/update! connection :patient {:firstname firstname
                                       :lastname lastname

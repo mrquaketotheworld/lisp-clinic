@@ -30,7 +30,9 @@
 (defn edit [request]
   (add-edit request (fn [patient-row formatted-patient-form]
                       (if patient-row
-                        (do (patient/edit formatted-patient-form) (message/success))
+                        (do (patient/edit formatted-patient-form)
+                            (message/success {:patient formatted-patient-form
+                                              :message "Patient was successfully edited"}))
                         (message/error (:patient-doesnt-exist error/errors))))))
 
 (defn get-by-mid [request]
