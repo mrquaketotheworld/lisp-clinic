@@ -154,7 +154,7 @@
          [:dispatch [:modal-active? true]]]}))
 
 (rf/reg-event-fx
- :edit-patient-form
+ :dit-patient-form
  check-spec-interceptor
  (fn [{:keys [db]} [_ mid]]
    {:db (assoc-in db [:patient] (first (filter #(= mid (:mid %)) (:patients db))))
