@@ -30,13 +30,6 @@ jobs:
         with:
           node-version: 18.16.0
       - name: Build
-        run: |
-          cd cljs
-          npm ci
-          curl -sLO https://raw.githubusercontent.com/clj-kondo/clj-kondo/master/script/install-clj-kondo
-          chmod +x install-clj-kondo
-          ./install-clj-kondo
-      - name: Lint
         run: cd cljs && npm run build
   # lint-clj:
   #   runs-on: ubuntu-22.04
