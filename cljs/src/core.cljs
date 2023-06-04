@@ -7,7 +7,6 @@
             [views.app :refer [app]]
             [dispatches :refer [init-db-sync search-patients get-cities]]))
 
-def test-temp "")
 (defn render []
   (reagent.dom/render [app] (js/document.getElementById "app")))
 
