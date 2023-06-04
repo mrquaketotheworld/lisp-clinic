@@ -1,5 +1,5 @@
 (ns db.models.patient
-  (:require [config :refer [db-config]]
+  (:require [db.config :refer [db-config]]
             [clojure.string :as string]
             [next.jdbc :as jdbc]
             [next.jdbc.sql :as sql]

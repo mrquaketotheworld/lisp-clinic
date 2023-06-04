@@ -1,5 +1,5 @@
 (ns db.init-tables
-  (:require [config :refer [db-config]]
+  (:require [db.config :refer [db-config]]
             [next.jdbc :as jdbc]
             [next.jdbc.sql :as sql]))
 

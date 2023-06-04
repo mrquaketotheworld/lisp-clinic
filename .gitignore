@@ -2,7 +2,6 @@
 .nrepl-port
 .clj-kondo
 .lsp
-config.edn
 target
 .shadow-cljs
 clj/resources/public/js

@@ -3,7 +3,7 @@
             [next.jdbc :as jdbc]
             [next.jdbc.result-set :as rs]
             [utils.format.address :as address-format]
-            [config :refer [db-config]]))
+            [db.config :refer [db-config]]))
 
 (defn get-address-id [city street house]
   (:address/id (first (sql/find-by-keys db-config :address

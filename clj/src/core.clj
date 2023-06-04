@@ -11,9 +11,7 @@
             [db.init-tables :as init-tables]
             [reitit.ring :as ring]
             [api.patient :as patient]
-            [api.address :as address]
-            [config]
-            [utils.file.interact :as file]))
+            [api.address :as address]))
 
 (def app
   (ring/ring-handler
@@ -39,7 +37,6 @@
                   wrap-json-response wrap-reload wrap-keyword-params wrap-params))
 
 (defn -main [& args]
-  (config/set-config! (file/load-edn "config.edn"))
   (when (= (first args) "init-tables")
     (init-tables/-main))
   (run-jetty wrapped-app {:port 3000 :join? false}))
