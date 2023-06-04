@@ -5,6 +5,7 @@
             [events]
             [subs]))
 
+(def test-temp "")
 (def ERROR-MESSAGE "Oops... Sorry, something went wrong, try to reload the page")
 
 (def default-patient {:firstname ""
