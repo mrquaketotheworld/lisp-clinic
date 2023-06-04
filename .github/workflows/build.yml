@@ -33,6 +33,20 @@ jobs:
         run: cd cljs && npm ci
       - name: Test
         run: cd cljs && npm run test
+  build-cljs:
+    needs: [test-cljs]
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.16.0
+      - name: Install deps
+        run: cd cljs && npm ci
+      - name: Build
+        run: cd cljs && npm run build
   lint-clj:
     runs-on: ubuntu-22.04
     steps:
@@ -70,20 +84,6 @@ jobs:
           sudo ./linux-install-1.11.1.1273.sh
       - name: Test
         run: cd clj && clojure -M:test
-  build-cljs:
-    needs: [test-cljs]
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.16.0
-      - name: Install deps
-        run: cd cljs && npm ci
-      - name: Build
-        run: cd cljs && npm run build
   build-clj:
     needs: [build-cljs, test-clj]
     runs-on: ubuntu-22.04
