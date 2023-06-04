@@ -8,8 +8,8 @@
     "react-dom": "17.0.2"
   },
   "scripts": {
-    "start": "npx shadow-cljs watch client",
-    "build": "npx shadow-cljs release client",
+    "start": "npx shadow-cljs watch app",
+    "build": "npx shadow-cljs release app",
     "lint": "clj-kondo --lint src --lint test",
     "test": "npx shadow-cljs compile test && npx karma start --single-run"
   },
