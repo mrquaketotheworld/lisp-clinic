@@ -1,17 +1,7 @@
 (ns views.table
   (:require [re-frame.core :as rf]
-            [dispatches :refer [show-modal delete-patient remove-ajax-success remove-ajax-error
-                                fill-edit-patient patient-form-mode clear-patient]]))
-
-(defn on-edit-patient [mid]
-  (patient-form-mode "edit")
-  (fill-edit-patient mid)
-  (show-modal))
-
-(defn on-add-patient []
-  (patient-form-mode "add")
-  (clear-patient)
-  (show-modal))
+            [dispatches :refer [delete-patient remove-ajax-success remove-ajax-error
+                                add-patient-form edit-patient-form]]))
 
 (defn render-patients-rows [patients]
   (map-indexed (fn [i {:keys [firstname lastname gender birth city street house mid]}]
@@ -24,7 +14,7 @@
                   [:td (str city ", " street ", " house)]
                   [:td mid]
                   [:td.has-text-right
-                   [:button.button.is-warning.mr-3 {:on-click #(on-edit-patient mid)}
+                   [:button.button.is-warning.mr-3 {:on-click #(edit-patient-form mid)}
                     [:span.icon.is-small
                      [:i.fa-solid.fa-pen]]]
                    [:button.button.is-danger {:on-click #(delete-patient mid)}
@@ -54,7 +44,7 @@
           [:th "Address"]
           [:th "MID"]
           [:th.has-text-right
-           [:button.button.is-info.is-pull-right {:on-click on-add-patient}
+           [:button.button.is-info.is-pull-right {:on-click add-patient-form}
             [:span.icon.is-small
              [:i.fa-solid.fa-user-plus]]
             [:span "Add patient"]]]]]

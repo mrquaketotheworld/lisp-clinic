@@ -86,12 +86,6 @@
                  :on-failure [:ajax-error]}}))
 
 (rf/reg-event-db
- :fill-edit-patient
- check-spec-interceptor
- (fn [db [_ mid]]
-   (assoc-in db [:patient] (first (filter #(= mid (:mid %)) (:patients db))))))
-
-(rf/reg-event-db
  :form-change
  check-spec-interceptor
  (fn [db [_ form field-key value]]
@@ -130,12 +124,6 @@
          [:dispatch [:get-cities]]]}))
 
 (rf/reg-event-db
- :clear-patient
- check-spec-interceptor
- (fn [db]
-   (assoc db :patient default-patient)))
-
-(rf/reg-event-db
  :patient-form-mode
  check-spec-interceptor
  (fn [db [_ mode]]
@@ -156,4 +144,20 @@
  check-spec-interceptor
  (fn [db [_ cities]]
    (assoc db :cities cities)))
+
+(rf/reg-event-fx
+ :add-patient-form
+ check-spec-interceptor
+ (fn [{:keys [db]}]
+   {:db (assoc db :patient default-patient)
+    :fx [[:dispatch [:patient-form-mode "add"]]
+         [:dispatch [:modal-active? true]]]}))
+
+(rf/reg-event-fx
+ :edit-patient-form
+ check-spec-interceptor
+ (fn [{:keys [db]} [_ mid]]
+   {:db (assoc-in db [:patient] (first (filter #(= mid (:mid %)) (:patients db))))
+    :fx [[:dispatch [:patient-form-mode "edit"]]
+         [:dispatch [:modal-active? true]]]}))
 
