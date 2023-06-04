@@ -29,6 +29,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.16.0
+      - name: Install deps
+        run: cd cljs && npm ci
       - name: Build
         run: cd cljs && npm run build
   # lint-clj:
