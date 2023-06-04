@@ -41,5 +41,5 @@
   (rf/dispatch [:add-patient-form]))
 
 (defn edit-patient-form [mid]
-  (rf/dispatch [:edit-patient-form mid]))
+  (rf/dispatch [:dit-patient-form mid]))
 
