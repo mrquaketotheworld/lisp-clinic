@@ -11,9 +11,9 @@ jobs:
         with:
           node-version: 18.16.0
       - name: Install node_modules
-        run: npm ci
+        run: cd cljs && npm ci
       - name: Lint
-        run: cd cljs && npm run lint
+        run: npm run lint
   # lint-clj:
   #   runs-on: ubuntu-22.04
   #   steps:
