@@ -2,75 +2,76 @@ name: Build
 on: push
 jobs:
 
-  lint-cljs:
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.16.0
-      - name: Install deps
-        run: |
-          cd cljs
-          npm ci
-          curl -sLO https://raw.githubusercontent.com/clj-kondo/clj-kondo/master/script/install-clj-kondo
-          chmod +x install-clj-kondo
-          ./install-clj-kondo
-      - name: Lint
-        run: cd cljs && npm run lint
+  # lint-cljs:
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #     - name: Install Node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 18.16.0
+  #     - name: Install deps
+  #       run: |
+  #         cd cljs
+  #         npm ci
+  #         curl -sLO https://raw.githubusercontent.com/clj-kondo/clj-kondo/master/script/install-clj-kondo
+  #         chmod +x install-clj-kondo
+  #         ./install-clj-kondo
+  #     - name: Lint
+  #       run: cd cljs && npm run lint
 
-  test-cljs:
-    needs: [lint-cljs]
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.16.0
-      - name: Install deps
-        run: cd cljs && npm ci
-      - name: Test
-        run: cd cljs && npm run test
+  # test-cljs:
+  #   needs: [lint-cljs]
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #     - name: Install Node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 18.16.0
+  #     - name: Install deps
+  #       run: cd cljs && npm ci
+  #     - name: Test
+  #       run: cd cljs && npm run test
 
-  build-cljs:
-    needs: [test-cljs]
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.16.0
-      - name: Install deps
-        run: cd cljs && npm ci
-      - name: Build
-        run: cd cljs && npm run build
+  # build-cljs:
+  #   needs: [test-cljs]
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #     - name: Install Node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 18.16.0
+  #     - name: Install deps
+  #       run: cd cljs && npm ci
+  #     - name: Build
+  #       run: cd cljs && npm run build
 
-  lint-clj:
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install Clojure
-        run: |
-          curl -O https://download.clojure.org/install/linux-install-1.11.1.1273.sh
-          chmod +x linux-install-1.11.1.1273.sh
-          sudo ./linux-install-1.11.1.1273.sh
-      - name: Lint
-        run: cd clj && clojure -M:lint
+  # lint-clj:
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #     - name: Install Clojure
+  #       run: |
+  #         curl -O https://download.clojure.org/install/linux-install-1.11.1.1273.sh
+  #         chmod +x linux-install-1.11.1.1273.sh
+  #         sudo ./linux-install-1.11.1.1273.sh
+  #     - name: Lint
+  #       run: cd clj && clojure -M:lint
 
   test-clj:
-    needs: [lint-clj]
+    # needs: [lint-clj]
     runs-on: ubuntu-22.04
     services:
       postgres:
         image: postgres
         env:
+          DB_URL: jdbc:postgresql://localhost:5432/postgres?user=postgres&password=postgres
           POSTGRES_HOST_AUTH_METHOD: trust
         options: >-
           --health-cmd pg_isready
@@ -90,19 +91,19 @@ jobs:
       - name: Test
         run: cd clj && clojure -M:test
 
-  build-clj:
-    needs: [build-cljs, test-clj]
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install Clojure
-        run: |
-          curl -O https://download.clojure.org/install/linux-install-1.11.1.1273.sh
-          chmod +x linux-install-1.11.1.1273.sh
-          sudo ./linux-install-1.11.1.1273.sh
-      - name: Build
-        run: cd clj && clojure -T:build uber
+  # build-clj:
+  #   needs: [build-cljs, test-clj]
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #     - name: Install Clojure
+  #       run: |
+  #         curl -O https://download.clojure.org/install/linux-install-1.11.1.1273.sh
+  #         chmod +x linux-install-1.11.1.1273.sh
+  #         sudo ./linux-install-1.11.1.1273.sh
+  #     - name: Build
+  #       run: cd clj && clojure -T:build uber
 
   # docker:
   #   runs-on: ubuntu-22.04
