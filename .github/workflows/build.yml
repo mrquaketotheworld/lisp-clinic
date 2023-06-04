@@ -21,6 +21,7 @@ jobs:
         run: cd cljs && npm run lint
   build-cljs:
     needs: [lint-cljs]
+    runs-on: ubuntu-22.04
     steps:
       - name: Install deps
         run: cd cljs && npm ci
