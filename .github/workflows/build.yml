@@ -71,7 +71,7 @@ jobs:
       - name: Test
         run: cd clj && clojure -M:test
   build-cljs:
-    needs: [test-cljs, test-clj]
+    needs: [test-cljs]
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
@@ -85,7 +85,7 @@ jobs:
       - name: Build
         run: cd cljs && npm run build
   build-clj:
-    needs: [build-cljs]
+    needs: [build-cljs, test-clj]
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
