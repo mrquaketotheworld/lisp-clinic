@@ -5,4 +5,4 @@
 config.edn
 target
 .shadow-cljs
-clj/public/js
+clj/resources/public/js
