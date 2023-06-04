@@ -67,7 +67,8 @@
        [select-gender-simple]
        [:div.column
         [:label.label "Birth"]
-        [:input.input {:type "date" :min "1900-01-01" :max (time/current-date) :required true
+        [:input.input {:type "date" :min (time/current-date-minus-100) :max (time/current-date)
+                       :required true
                        :on-change (on-input-change :birth)
                        :value (:birth @(rf/subscribe [:patient]))}]]
        [input {:label "Medical Insurance ID"
