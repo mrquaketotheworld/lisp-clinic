@@ -20,4 +20,5 @@
   (b/uber {:class-dir class-dir
            :uber-file uber-file
            :basis basis
-           :main 'core}))
+           :main 'core})
+  (println "------ Build finished ------"))
