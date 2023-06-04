@@ -1,7 +1,7 @@
 name: Build
 on: push
 jobs:
-  lint-test-cljs:
+  lint-cljs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
@@ -19,10 +19,34 @@ jobs:
           ./install-clj-kondo
       - name: Lint
         run: cd cljs && npm run lint
+  test-cljs:
+    needs: [lint-cljs]
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.16.0
+      - name: Install deps
+        run: cd cljs && npm ci
       - name: Test
         run: cd cljs && npm run test
-  lint-test-clj:
-    needs: [lint-test-cljs]
+  lint-clj:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Clojure
+        run: |
+          curl -O https://download.clojure.org/install/linux-install-1.11.1.1273.sh
+          chmod +x linux-install-1.11.1.1273.sh
+          sudo ./linux-install-1.11.1.1273.sh
+      - name: Lint
+        run: cd clj && clojure -M:lint
+  test-clj:
+    needs: [lint-clj]
     runs-on: ubuntu-22.04
     services:
       postgres:
@@ -44,12 +68,10 @@ jobs:
           curl -O https://download.clojure.org/install/linux-install-1.11.1.1273.sh
           chmod +x linux-install-1.11.1.1273.sh
           sudo ./linux-install-1.11.1.1273.sh
-      - name: Lint
-        run: cd clj && clojure -M:lint
       - name: Test
         run: cd clj && clojure -M:test
   build-cljs:
-    needs: [lint-test-clj]
+    needs: [test-clj]
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
