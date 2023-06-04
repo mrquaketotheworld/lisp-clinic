@@ -23,6 +23,12 @@ jobs:
     needs: [lint-cljs]
     runs-on: ubuntu-22.04
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.16.0
       - name: Install deps
         run: cd cljs && npm ci
       - name: Build
