@@ -1,6 +1,7 @@
 name: Build
 on: push
 jobs:
+
   lint-cljs:
     runs-on: ubuntu-22.04
     steps:
@@ -19,6 +20,7 @@ jobs:
           ./install-clj-kondo
       - name: Lint
         run: cd cljs && npm run lint
+
   test-cljs:
     needs: [lint-cljs]
     runs-on: ubuntu-22.04
@@ -33,6 +35,7 @@ jobs:
         run: cd cljs && npm ci
       - name: Test
         run: cd cljs && npm run test
+
   build-cljs:
     needs: [test-cljs]
     runs-on: ubuntu-22.04
@@ -47,6 +50,7 @@ jobs:
         run: cd cljs && npm ci
       - name: Build
         run: cd cljs && npm run build
+
   lint-clj:
     runs-on: ubuntu-22.04
     steps:
@@ -59,6 +63,7 @@ jobs:
           sudo ./linux-install-1.11.1.1273.sh
       - name: Lint
         run: cd clj && clojure -M:lint
+
   test-clj:
     needs: [lint-clj]
     runs-on: ubuntu-22.04
@@ -84,6 +89,7 @@ jobs:
           sudo ./linux-install-1.11.1.1273.sh
       - name: Test
         run: cd clj && clojure -M:test
+
   build-clj:
     needs: [build-cljs, test-clj]
     runs-on: ubuntu-22.04
@@ -97,3 +103,17 @@ jobs:
           sudo ./linux-install-1.11.1.1273.sh
       - name: Build
         run: cd clj && clojure -T:build uber
+
+  docker:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: newrushiflyer/lisp-clinic:latest
