@@ -13,7 +13,7 @@ jobs:
       - name: Install node_modules
         run: cd cljs && npm ci
       - name: Lint
-        run: npm run lint
+        run: cd cljs && npm run lint
   # lint-clj:
   #   runs-on: ubuntu-22.04
   #   steps:
