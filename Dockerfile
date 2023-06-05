@@ -11,7 +11,6 @@ RUN curl -O https://download.clojure.org/install/linux-install-1.11.1.1273.sh &&
 
 # build cljs
 RUN cd cljs && npm ci && npm run build
-RUN rm -rf cljs/node_modules && rm -rf cljs/.shadow-cljs
 
 # build clj
 RUN cd clj && clojure -T:build uber
