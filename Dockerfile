@@ -1,4 +1,4 @@
-FROM node:18.16.0
+FROM node:18.16.0 AS builder
 RUN mkdir -p /build
 WORKDIR /build
 COPY . .
@@ -16,5 +16,9 @@ RUN rm -rf cljs/node_modules && rm -rf cljs/.shadow-cljs
 # build clj
 RUN cd clj && clojure -T:build uber
 
+# production step
+FROM eclipse-temurin:17-alpine
+COPY --from=builder /build/clj/target/lisp-clinic.jar .
+
 # run final build
-ENTRYPOINT ["java", "-jar", "clj/target/lisp-clinic.jar"]
+ENTRYPOINT ["java", "-jar", "lisp-clinic.jar"]
