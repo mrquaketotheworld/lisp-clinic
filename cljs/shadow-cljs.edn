@@ -9,7 +9,7 @@
   [day8.re-frame/test "0.1.5"]]
  :nrepl {:port 8777}
  :builds {:app {:target :browser
-                :output-dir "../clj/public/js"
+                :output-dir "../clj/resources/public/js"
                 :modules {:app {:init-fn core/-main}}
                 :devtools {:preloads [day8.re-frame-10x.preload]}
                 :dev {:compiler-options
