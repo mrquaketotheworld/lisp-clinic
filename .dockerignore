@@ -1,0 +1,9 @@
+*
+!clj/resources/
+!clj/src/
+!clj/build.clj
+!clj/deps.edn
+!cljs/src/
+!cljs/package-lock.json
+!cljs/package.json
+!cljs/shadow-cljs.edn
