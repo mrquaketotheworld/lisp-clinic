@@ -44,7 +44,7 @@
                                   created_at timestamptz DEFAULT NOW() NOT NULL,
                                   UNIQUE (city, street, house))"]))
 
-(defn -main []
+(defn init []
   (println 'INIT-TABLES)
   (create-table-gender)
   (add-genders)

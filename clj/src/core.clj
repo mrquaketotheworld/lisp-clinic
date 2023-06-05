@@ -36,7 +36,6 @@
                   (wrap-json-body {:keywords? true})
                   wrap-json-response wrap-reload wrap-keyword-params wrap-params))
 
-(defn -main [& args]
-  (try (init-tables/-main)
-       (catch Exception _))
+(defn -main []
+  (try (init-tables/init) (catch Exception _))
   (run-jetty wrapped-app {:port 3000 :join? false}))

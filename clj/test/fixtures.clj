@@ -5,7 +5,7 @@
 
 (defn db-fixture [tests-run]
   (jdbc/execute-one! db-config ["DROP TABLE IF EXISTS address, gender, patient"])
-  (init-tables/-main)
+  (init-tables/init)
   (tests-run))
 
 (defn clear-tables-fixture [test-run]
